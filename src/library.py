@@ -8,8 +8,6 @@ class Library:
         self.books: list[Book] = []
 
     def add_book(self, book: Book) -> None:
-        # NOTE: Adding books requires all fields in the Book class to be filled out
-
         if self.book_by_isbn(book.isbn):
             print('Book already exists.')
         else:
@@ -17,9 +15,6 @@ class Library:
             print('Book added successfully.')
 
     def remove_book(self, isbn: str) -> None:
-        # NOTE: Removing a book only requires the ISBN, assuming that no two books share the same
-        #       ISBN
-
         book = self.book_by_isbn(isbn)
 
         if book:
@@ -87,9 +82,7 @@ class Library:
                     self.add_book(Book.from_dict(book_data))
 
             print(f'JSON data loaded from file {file_path}.')
-        # print errors here, then raise them to pass handling to main file
         except FileNotFoundError as e:
             raise e
         except json.JSONDecodeError as e:
-            print(f'ERROR: Error decoding JSON from file {file_path}: {e}')
             raise e
