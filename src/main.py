@@ -1,6 +1,10 @@
 import os
-
 import json
+
+from rich import box
+from rich.table import Table
+from rich import print as rprint
+from rich.prompt import Prompt, Confirm
 
 from book import Book
 from library import Library
@@ -11,85 +15,95 @@ def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def prompt_add(library: Library):
+    print('Add mode. Enter [q] to quit.')
+
     while True:
-        title = input('Title: ')
+        title = Prompt.ask('Title')
 
         if title.lower() == 'q':
             break
 
-        author = input('Author: ')
+        author = Prompt.ask('Author')
 
         if author.lower() == 'q':
             break
 
-        isbn = input('ISBN: ')
+        isbn = Prompt.ask('ISBN')
 
         if isbn.lower() == 'q':
             break
 
         library.add_book(Book(title, author, isbn))
 
-        break
-
 def prompt_remove(library: Library):
+    print('Remove mode. Enter [q] to quit.')
+
     while True:
-        isbn = input('ISBN: ')
+        isbn = Prompt.ask('ISBN')
 
         if isbn.lower() == 'q':
             break
 
         library.remove_book(isbn)
 
-        break
-
 def prompt_list(library: Library):
-    library.list_books()
+    table = create_table()
+
+    for book in library.books:
+        table.add_row(book.title, book.author, book.isbn)
+
+    rprint(table)
+
+def prompt_search(library: Library):
+    table = create_table()
+    query = Prompt.ask('Search')
+
+    books = library.books_by_title(query)
+
+    for book in books:
+        table.add_row(book.title, book.author, book.isbn)
+
+    rprint(table)
+
+def create_table():
+    table = Table(box=box.HORIZONTALS, row_styles=['', 'dim'])
+
+    table.add_column('Title', style='#94e2d5', header_style='#94e2d5')
+    table.add_column('Author', style='#74c7ec', header_style='#74c7ec')
+    table.add_column('ISBN', style='#b4befe', header_style='#b4befe')
+
+    return table
 
 def run_app():
     library = Library()
 
-    clear_screen()
-
     try:
         library.load_file(DEFAULT_FILE_PATH)
     except FileNotFoundError:
-        print(
-            f'The {DEFAULT_FILE_PATH} file could not be located. '
-            f'Create a new {DEFAULT_FILE_PATH} file?'
-        )
+        print(f'The {DEFAULT_FILE_PATH} file could not be located.')
 
         while True:
-            choice = input('[y]es, [q]uit: ')
+            choice = Confirm.ask(f'Create a new {DEFAULT_FILE_PATH} file?')
 
             match choice:
-                case 'y':
-                    # let the main loop handle the file: if book(s) are created, then a new
-                    # library.json file is made, otherwise the main loop will exit without anything
-                    # being saved
+                case True:
                     break
-                case 'q':
+                case False:
                     return
-    except json.JSONDecodeError:
-        # once here, we know a file exists
+    except json.JSONDecodeError as e:
         is_empty = os.stat(DEFAULT_FILE_PATH).st_size == 0
 
         if is_empty:
-            # act on the file normally if the contents are completely empty
-            pass
+            print(f'Empty file {DEFAULT_FILE_PATH}, continuing.')
         else:
+            print(f'ERROR: Error decoding JSON from file {DEFAULT_FILE_PATH}: {e}')
             return
 
-    clear_screen()
-
     while True:
-        user_input = input('[a]dd, [r]emove, [l]ist, [q]uit: ')
+        user_input = Prompt.ask(r'\[a]dd, \[r]emove, \[l]ist, \[s]earch, \[q]uit',
+                                choices=['a', 'r', 'l', 's', 'q'])
 
         match user_input:
-            case 'q':
-                # TODO: add a separate prompt to save the book list to prevent accidental overwrites
-                # TODO: tell user if the file has been created or updated
-                library.update_file(DEFAULT_FILE_PATH)
-                return
             case 'a':
                 clear_screen()
                 prompt_add(library)
@@ -99,6 +113,12 @@ def run_app():
             case 'l':
                 clear_screen()
                 prompt_list(library)
+            case 's':
+                clear_screen()
+                prompt_search(library)
+            case 'q':
+                library.update_file(DEFAULT_FILE_PATH)
+                return
 
 def main():
     run_app()
