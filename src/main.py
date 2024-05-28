@@ -1,15 +1,16 @@
 import os
 
+import json
+
 from book import Book
 from library import Library
 
-library = Library()
-file_path = '../data/test.json'
+DEFAULT_FILE_PATH = '../data/library.json'
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def prompt_add():
+def prompt_add(library: Library):
     while True:
         title = input('Title: ')
 
@@ -30,7 +31,7 @@ def prompt_add():
 
         break
 
-def prompt_remove():
+def prompt_remove(library: Library):
     while True:
         isbn = input('ISBN: ')
 
@@ -41,32 +42,66 @@ def prompt_remove():
 
         break
 
-def prompt_list():
+def prompt_list(library: Library):
     library.list_books()
 
-def main():
+def run_app():
+    library = Library()
+
     clear_screen()
 
-    # TODO: Prompt the user to either create a new file or exit
-    library.load_books(file_path)
+    try:
+        library.load_file(DEFAULT_FILE_PATH)
+    except FileNotFoundError:
+        print(
+            f'The {DEFAULT_FILE_PATH} file could not be located. '
+            f'Create a new {DEFAULT_FILE_PATH} file?'
+        )
+
+        while True:
+            choice = input('[y]es, [q]uit: ')
+
+            match choice:
+                case 'y':
+                    # let the main loop handle the file: if book(s) are created, then a new
+                    # library.json file is made, otherwise the main loop will exit without anything
+                    # being saved
+                    break
+                case 'q':
+                    return
+    except json.JSONDecodeError:
+        # once here, we know a file exists
+        is_empty = os.stat(DEFAULT_FILE_PATH).st_size == 0
+
+        if is_empty:
+            # act on the file normally if the contents are completely empty
+            pass
+        else:
+            return
+
+    clear_screen()
 
     while True:
         user_input = input('[a]dd, [r]emove, [l]ist, [q]uit: ')
 
         match user_input:
             case 'q':
-                # TODO: Add a separate prompt to save the book list to prevent accidental overwrites
-                library.save_books(file_path)
-                break
+                # TODO: add a separate prompt to save the book list to prevent accidental overwrites
+                # TODO: tell user if the file has been created or updated
+                library.update_file(DEFAULT_FILE_PATH)
+                return
             case 'a':
                 clear_screen()
-                prompt_add()
+                prompt_add(library)
             case 'r':
                 clear_screen()
-                prompt_remove()
+                prompt_remove(library)
             case 'l':
                 clear_screen()
-                prompt_list()
+                prompt_list(library)
+
+def main():
+    run_app()
 
 if __name__ == '__main__':
     main()
