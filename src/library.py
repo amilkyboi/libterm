@@ -39,7 +39,7 @@ class Library:
     def update_file(self, file_path: str):
         existing_file = os.path.isfile(file_path)
 
-        books_data = [book.to_dict() for book in self.books]
+        books_data = [vars(book) for book in self.books]
 
         existing_data = None
 
@@ -79,7 +79,7 @@ class Library:
 
                 # TODO: Suppress output from books being added via JSON read
                 for book_data in books_data:
-                    self.add_book(Book.from_dict(book_data))
+                    self.add_book(Book(**book_data))
 
             print(f'JSON data loaded from file {file_path}.')
         except FileNotFoundError as e:
