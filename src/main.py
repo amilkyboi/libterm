@@ -54,6 +54,17 @@ def prompt_list(library: Library):
 
     rprint(table)
 
+def prompt_search(library: Library):
+    table = create_table()
+    query = Prompt.ask('Search')
+
+    books = library.books_by_title(query)
+
+    for book in books:
+        table.add_row(book.title, book.author, book.isbn)
+
+    rprint(table)
+
 def create_table():
     table = Table(box=box.HORIZONTALS, row_styles=['', 'dim'])
 
@@ -89,8 +100,8 @@ def run_app():
             return
 
     while True:
-        user_input = Prompt.ask(r'\[a]dd, \[r]emove, \[l]ist, \[q]uit',
-                                choices=['a', 'r', 'l', 'q'])
+        user_input = Prompt.ask(r'\[a]dd, \[r]emove, \[l]ist, \[s]earch, \[q]uit',
+                                choices=['a', 'r', 'l', 's', 'q'])
 
         match user_input:
             case 'a':
@@ -102,6 +113,9 @@ def run_app():
             case 'l':
                 clear_screen()
                 prompt_list(library)
+            case 's':
+                clear_screen()
+                prompt_search(library)
             case 'q':
                 library.update_file(DEFAULT_FILE_PATH)
                 return
