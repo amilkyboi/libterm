@@ -28,12 +28,8 @@ class Library:
         else:
             print('Book not found.')
 
-    def list_books(self) -> list[Book] | None:
-        if self.books:
-            for book in self.books:
-                print(book)
-
-        return None
+    def list_books(self) -> list[Book]:
+        return self.books
 
     def book_by_isbn(self, isbn: str) -> Book | None:
         for book in self.books:

@@ -1,6 +1,8 @@
 import os
-
 import json
+
+from rich.table import Table
+from rich import print as rprint
 
 from book import Book
 from library import Library
@@ -43,7 +45,16 @@ def prompt_remove(library: Library):
         break
 
 def prompt_list(library: Library):
-    library.list_books()
+    table = Table(title='Library')
+
+    table.add_column('Title')
+    table.add_column('Author')
+    table.add_column('ISBN')
+
+    for book in library.list_books():
+        table.add_row(book.title, book.author, book.isbn)
+
+    rprint(table)
 
 def run_app():
     library = Library()
@@ -86,8 +97,6 @@ def run_app():
 
         match user_input:
             case 'q':
-                # TODO: add a separate prompt to save the book list to prevent accidental overwrites
-                # TODO: tell user if the file has been created or updated
                 library.update_file(DEFAULT_FILE_PATH)
                 return
             case 'a':

@@ -6,9 +6,6 @@ class Book:
         self.author: str = author
         self.isbn:   str = isbn
 
-    def __str__(self) -> str:
-        return f'Title: {self.title}, Author: {self.author}, ISBN: {self.isbn}'
-
     def to_dict(self) -> dict[str, str]:
         return {
             'title': self.title,
