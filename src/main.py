@@ -18,7 +18,7 @@ def clear_screen() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def prompt_add(library: Library) -> None:
-    print('Add mode. Enter [q] to quit.')
+    print('Add mode. Press [q] to exit.')
 
     while True:
         title: str = Prompt.ask('Title')
@@ -39,7 +39,7 @@ def prompt_add(library: Library) -> None:
         library.add_book(Book(title, author, isbn))
 
 def prompt_remove(library: Library) -> None:
-    print('Remove mode. Enter [q] to quit.')
+    print('Remove mode. Press [q] to exit.')
 
     while True:
         isbn: str = Prompt.ask('ISBN')
