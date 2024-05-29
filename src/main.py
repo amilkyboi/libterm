@@ -1,3 +1,5 @@
+# module main
+
 import os
 import json
 
@@ -11,62 +13,62 @@ from library import Library
 
 DEFAULT_FILE_PATH = '../data/library.json'
 
-def clear_screen():
+def clear_screen() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def prompt_add(library: Library):
+def prompt_add(library: Library) -> None:
     print('Add mode. Enter [q] to quit.')
 
     while True:
-        title = Prompt.ask('Title')
+        title: str = Prompt.ask('Title')
 
         if title.lower() == 'q':
             break
 
-        author = Prompt.ask('Author')
+        author: str = Prompt.ask('Author')
 
         if author.lower() == 'q':
             break
 
-        isbn = Prompt.ask('ISBN')
+        isbn: str = Prompt.ask('ISBN')
 
         if isbn.lower() == 'q':
             break
 
         library.add_book(Book(title, author, isbn))
 
-def prompt_remove(library: Library):
+def prompt_remove(library: Library) -> None:
     print('Remove mode. Enter [q] to quit.')
 
     while True:
-        isbn = Prompt.ask('ISBN')
+        isbn: str = Prompt.ask('ISBN')
 
         if isbn.lower() == 'q':
             break
 
         library.remove_book(isbn)
 
-def prompt_list(library: Library):
-    table = create_table()
+def prompt_list(library: Library) -> None:
+    table: Table = create_table()
 
     for book in library.books:
         table.add_row(book.title, book.author, book.isbn)
 
     rprint(table)
 
-def prompt_search(library: Library):
-    table = create_table()
-    query = Prompt.ask('Search')
+def prompt_search(library: Library) -> None:
+    table: Table = create_table()
+    query: str   = Prompt.ask('Search')
 
-    books = library.books_by_title(query)
+    books: list[Book] = library.books_by_title(query)
 
     for book in books:
         table.add_row(book.title, book.author, book.isbn)
 
     rprint(table)
 
-def create_table():
-    table = Table(box=box.HORIZONTALS, row_styles=['', 'dim'])
+def create_table() -> Table:
+    table: Table = Table(box=box.HORIZONTALS, row_styles=['', 'dim'])
 
     table.add_column('Title', style='#94e2d5', header_style='#94e2d5')
     table.add_column('Author', style='#74c7ec', header_style='#74c7ec')
@@ -74,8 +76,8 @@ def create_table():
 
     return table
 
-def run_app():
-    library = Library()
+def run_app() -> None:
+    library: Library = Library()
 
     try:
         library.load_file(DEFAULT_FILE_PATH)
@@ -83,7 +85,7 @@ def run_app():
         print(f'The {DEFAULT_FILE_PATH} file could not be located.')
 
         while True:
-            choice = Confirm.ask(f'Create a new {DEFAULT_FILE_PATH} file?')
+            choice: bool = Confirm.ask(f'Create a new {DEFAULT_FILE_PATH} file?')
 
             match choice:
                 case True:
@@ -91,7 +93,7 @@ def run_app():
                 case False:
                     return
     except json.JSONDecodeError as e:
-        is_empty = os.stat(DEFAULT_FILE_PATH).st_size == 0
+        is_empty: bool = os.stat(DEFAULT_FILE_PATH).st_size == 0
 
         if is_empty:
             print(f'Empty file {DEFAULT_FILE_PATH}, continuing.')
@@ -100,8 +102,8 @@ def run_app():
             return
 
     while True:
-        user_input = Prompt.ask(r'\[a]dd, \[r]emove, \[l]ist, \[s]earch, \[q]uit',
-                                choices=['a', 'r', 'l', 's', 'q'])
+        user_input: str = Prompt.ask(r'\[a]dd, \[r]emove, \[l]ist, \[s]earch, \[q]uit',
+                                     choices=['a', 'r', 'l', 's', 'q'])
 
         match user_input:
             case 'a':
@@ -120,7 +122,7 @@ def run_app():
                 library.update_file(DEFAULT_FILE_PATH)
                 return
 
-def main():
+def main() -> None:
     run_app()
 
 if __name__ == '__main__':

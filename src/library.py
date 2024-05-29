@@ -1,3 +1,5 @@
+# module library
+
 import os
 import json
 
@@ -12,30 +14,29 @@ class Library:
         self.index_from_author: defaultdict[str, list] = defaultdict(list)
         self.index_from_isbn:   dict[str, int]         = {}
 
-    def add_book(self, book: Book) -> None:
+    def add_book(self, book: Book, from_file: bool = False) -> None:
         if self.book_by_isbn(book.isbn):
             print(f'Title: {book.title}, ISBN: {book.isbn} already exists.')
         else:
             self.books.append(book)
 
-            book_index = len(self.books) - 1
+            book_index: int = len(self.books) - 1
 
             self.index_from_title[book.title].append(book_index)
             self.index_from_author[book.author].append(book_index)
             self.index_from_isbn[book.isbn] = book_index
 
-            print(f'Title: {book.title}, ISBN: {book.isbn} added successfully.')
+            if not from_file:
+                print(f'Title: {book.title}, ISBN: {book.isbn} added successfully.')
 
     def remove_book(self, isbn: str) -> None:
-        book = self.book_by_isbn(isbn)
+        book: Book | None = self.book_by_isbn(isbn)
 
         if book:
-            book_index = self.index_from_isbn[isbn]
+            book_index: int = self.index_from_isbn[isbn]
 
             del self.books[book_index]
 
-            # we want to remove the book_index itself from the list, not the value which book_index
-            # points to
             self.index_from_title[book.title].remove(book_index)
             if not self.index_from_title[book.title]:
                 del self.index_from_title[book.title]
@@ -75,11 +76,11 @@ class Library:
             return None
 
     def update_file(self, file_path: str) -> None:
-        existing_file = os.path.isfile(file_path)
+        existing_file: bool = os.path.isfile(file_path)
 
-        books_data = [vars(book) for book in self.books]
+        books_data: list[dict[str, str]] = [vars(book) for book in self.books]
 
-        existing_data = None
+        existing_data: list[dict[str, str]] | None = None
 
         if existing_file:
             with open(file_path, 'r', encoding='utf-8') as json_file:
@@ -113,11 +114,10 @@ class Library:
     def load_file(self, file_path: str) -> None:
         try:
             with open(file_path, 'r', encoding='utf-8') as json_file:
-                books_data = json.load(json_file)
+                books_data: list[dict[str, str]] | list = json.load(json_file)
 
-                # TODO: Suppress output from books being added via JSON read
                 for book_data in books_data:
-                    self.add_book(Book(**book_data))
+                    self.add_book(Book(**book_data), from_file=True)
 
             print(f'JSON data loaded from file {file_path}.')
         except FileNotFoundError as e:
