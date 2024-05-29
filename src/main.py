@@ -60,7 +60,7 @@ def prompt_search(library: Library) -> None:
     table: Table = create_table()
     query: str   = Prompt.ask('Search')
 
-    books: list[Book] = library.search_dict(query)
+    books: list[Book] = library.search_fuzz(query)
 
     for book in books:
         table.add_row(book.title, book.author, book.isbn)

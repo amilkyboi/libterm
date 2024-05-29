@@ -7,7 +7,7 @@ Personal library management system in the terminal.
 ### Short-term
 
 - [x] Partial string search for titles, authors, and ISBN numbers
-- [ ] Fuzzy finding for titles, authors, and ISBN numbers
+- [x] Fuzzy finding for titles, authors, and ISBN numbers
 - [ ] Optionally export data to CSV
 - [ ] Add JSON schema
 

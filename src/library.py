@@ -3,7 +3,7 @@
 import os
 import re
 import json
-from re import Pattern
+from re import Pattern, Match
 from collections import defaultdict
 
 from book import Book
@@ -81,7 +81,7 @@ class Library:
         results = []
 
         for book in self.books:
-            if (pattern.search(book.title) or pattern.search(book.author)or
+            if (pattern.search(book.title) or pattern.search(book.author) or
                 pattern.search(book.isbn)):
                 results.append(book)
 
@@ -102,6 +102,33 @@ class Library:
         for isbn, index in self.index_from_isbn.items():
             if pattern.search(isbn):
                 matched_indices.add(index)
+
+        return [self.books[i] for i in matched_indices]
+
+    def search_fuzz(self, query: str) -> list[Book]:
+        matched_indices: set = set()
+
+        def fuzz(query: str, collection: dict) -> list[str]:
+            # fuzzy finder adapted from: https://blog.amjith.com/fuzzyfinder-in-10-lines-of-python
+            suggestions: list[tuple[int, int, str]] = []
+            pattern:     str                        = '.*?'.join(re.escape(query))
+            regex:       Pattern[str]               = re.compile(pattern, re.IGNORECASE)
+
+            for item in collection:
+                match: Match[str] | None = regex.search(item)
+                if match:
+                    suggestions.append((len(match.group()), match.start(), item))
+
+            return [x for _, _, x in sorted(suggestions)]
+
+        for title in fuzz(query, self.index_from_title):
+            matched_indices.update(self.index_from_title[title])
+
+        for author in fuzz(query, self.index_from_author):
+            matched_indices.update(self.index_from_author[author])
+
+        for isbn in fuzz(query, self.index_from_isbn):
+            matched_indices.add(self.index_from_isbn[isbn])
 
         return [self.books[i] for i in matched_indices]
 
