@@ -10,8 +10,9 @@ from rich.prompt import Prompt, Confirm
 
 from book import Book
 from library import Library
+from export import json_to_csv
 
-DEFAULT_FILE_PATH = '../data/library.json'
+DEFAULT_FILE_PATH: str = '../data/library.json'
 
 def clear_screen() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -67,6 +68,15 @@ def prompt_search(library: Library) -> None:
 
     rprint(table)
 
+def prompt_export() -> None:
+    # TODO: deal with file already existing
+
+    do_export = Confirm.ask('Convert the saved JSON to CSV?')
+
+    if do_export:
+        csv_file_path = json_to_csv(DEFAULT_FILE_PATH)
+        print(f'File {DEFAULT_FILE_PATH} exported to {csv_file_path}.')
+
 def create_table() -> Table:
     table: Table = Table(box=box.HORIZONTALS, row_styles=['', 'dim'])
 
@@ -102,8 +112,8 @@ def run_app() -> None:
             return
 
     while True:
-        user_input: str = Prompt.ask(r'\[a]dd, \[r]emove, \[l]ist, \[s]earch, \[q]uit',
-                                     choices=['a', 'r', 'l', 's', 'q'])
+        user_input: str = Prompt.ask(r'\[a]dd, \[r]emove, \[l]ist, \[s]earch, \[e]xport, \[q]uit',
+                                     choices=['a', 'r', 'l', 's', 'e', 'q'])
 
         match user_input:
             case 'a':
@@ -118,6 +128,9 @@ def run_app() -> None:
             case 's':
                 clear_screen()
                 prompt_search(library)
+            case 'e':
+                clear_screen()
+                prompt_export()
             case 'q':
                 library.update_file(DEFAULT_FILE_PATH)
                 return
