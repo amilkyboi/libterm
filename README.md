@@ -8,6 +8,7 @@ Personal library management system in the terminal.
 
 - [ ] Fuzzy finding for titles, authors, and ISBN numbers
 - [ ] Optionally export data to CSV
+- [ ] Add JSON schema
 
 ### Long-term
 

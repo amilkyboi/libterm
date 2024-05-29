@@ -14,7 +14,7 @@ class Library:
 
     def add_book(self, book: Book) -> None:
         if self.book_by_isbn(book.isbn):
-            print(f'{book.title}, ISBN: {book.isbn} already exists.')
+            print(f'Title: {book.title}, ISBN: {book.isbn} already exists.')
         else:
             self.books.append(book)
 
@@ -24,7 +24,7 @@ class Library:
             self.index_from_author[book.author].append(book_index)
             self.index_from_isbn[book.isbn] = book_index
 
-            print(f'{book.title}, ISBN: {book.isbn} added successfully.')
+            print(f'Title: {book.title}, ISBN: {book.isbn} added successfully.')
 
     def remove_book(self, isbn: str) -> None:
         book = self.book_by_isbn(isbn)
@@ -58,7 +58,7 @@ class Library:
                 if idx > book_index:
                     self.index_from_isbn[isbn_key] -= 1
 
-            print(f'{book.title}, ISBN: {isbn} removed successfully.')
+            print(f'Title: {book.title}, ISBN: {isbn} removed successfully.')
         else:
             print(f'ISBN: {isbn} not found.')
 
