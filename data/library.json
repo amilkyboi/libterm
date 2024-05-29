@@ -1,7 +1,32 @@
 [
     {
-        "title": "test",
-        "author": "test",
+        "title": "math",
+        "author": "prof",
         "isbn": "1234"
+    },
+    {
+        "title": "phys",
+        "author": "prof",
+        "isbn": "2345"
+    },
+    {
+        "title": "chem",
+        "author": "prof",
+        "isbn": "3456"
+    },
+    {
+        "title": "math",
+        "author": "dude",
+        "isbn": "4567"
+    },
+    {
+        "title": "phys",
+        "author": "dude",
+        "isbn": "5678"
+    },
+    {
+        "title": "chem",
+        "author": "dude",
+        "isbn": "7890"
     }
 ]

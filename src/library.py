@@ -1,20 +1,21 @@
 # module library
 
 import os
+import re
 import json
-
+from re import Pattern
 from collections import defaultdict
 
 from book import Book
 
 class Library:
     def __init__(self) -> None:
-        self.books:             list[Book]             = []
-        self.index_from_title:  defaultdict[str, list] = defaultdict(list)
-        self.index_from_author: defaultdict[str, list] = defaultdict(list)
-        self.index_from_isbn:   dict[str, int]         = {}
+        self.books:             list[Book]                  = []
+        self.index_from_title:  defaultdict[str, list[int]] = defaultdict(list)
+        self.index_from_author: defaultdict[str, list[int]] = defaultdict(list)
+        self.index_from_isbn:   dict[str, int]              = {}
 
-    def add_book(self, book: Book, from_file: bool = False) -> None:
+    def add_book(self, book: Book, suppress_output: bool = False) -> None:
         if self.book_by_isbn(book.isbn):
             print(f'Title: {book.title}, ISBN: {book.isbn} already exists.')
         else:
@@ -26,7 +27,7 @@ class Library:
             self.index_from_author[book.author].append(book_index)
             self.index_from_isbn[book.isbn] = book_index
 
-            if not from_file:
+            if not suppress_output:
                 print(f'Title: {book.title}, ISBN: {book.isbn} added successfully.')
 
     def remove_book(self, isbn: str) -> None:
@@ -75,6 +76,35 @@ class Library:
         except KeyError:
             return None
 
+    def search_list(self, query: str) -> list[Book]:
+        pattern = re.compile(re.escape(query), re.IGNORECASE)
+        results = []
+
+        for book in self.books:
+            if (pattern.search(book.title) or pattern.search(book.author)or
+                pattern.search(book.isbn)):
+                results.append(book)
+
+        return results
+
+    def search_dict(self, query: str) -> list[Book]:
+        pattern:         Pattern[str] = re.compile(re.escape(query), re.IGNORECASE)
+        matched_indices: set          = set()
+
+        for title, indices in self.index_from_title.items():
+            if pattern.search(title):
+                matched_indices.update(indices)
+
+        for author, indices in self.index_from_author.items():
+            if pattern.search(author):
+                matched_indices.update(indices)
+
+        for isbn, index in self.index_from_isbn.items():
+            if pattern.search(isbn):
+                matched_indices.add(index)
+
+        return [self.books[i] for i in matched_indices]
+
     def update_file(self, file_path: str) -> None:
         existing_file: bool = os.path.isfile(file_path)
 
@@ -117,7 +147,7 @@ class Library:
                 books_data: list[dict[str, str]] | list = json.load(json_file)
 
                 for book_data in books_data:
-                    self.add_book(Book(**book_data), from_file=True)
+                    self.add_book(Book(**book_data), suppress_output=True)
 
             print(f'JSON data loaded from file {file_path}.')
         except FileNotFoundError as e:
