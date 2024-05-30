@@ -146,15 +146,15 @@ def prompt_list(library: Library) -> None:
 
         rprint(Align(Panel(table, title=f'Page {page + 1} of {max_page}'), align='center'))
 
-        prompt: str = Prompt.ask(r'\[u]p, \[d]own, \[g]oto, \[q]uit', choices=['u', 'd', 'g', 'q'])
+        prompt: str = Prompt.ask(r'\[n]ext, \[p]rev, \[g]oto, \[q]uit', choices=['n', 'p', 'g', 'q'])
 
         match prompt:
-            case 'u':
-                if page != 0:
-                    page -= 1
-            case 'd':
+            case 'n':
                 if end != len(books):
                     page += 1
+            case 'p':
+                if page != 0:
+                    page -= 1
             case 'g':
                 while True:
                     page_no: str = Prompt.ask('Page')
