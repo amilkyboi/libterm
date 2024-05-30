@@ -27,7 +27,6 @@ class Library:
 
     def edit_book(self, book: Book, new_title: str, new_author: str, new_isbn: str) -> None:
         # NOTE: only called if the book exists and the new ISBN isn't taken; enforced in main.py
-
         new_book: Book = Book(new_title, new_author, new_isbn)
 
         self.remove_book(book)

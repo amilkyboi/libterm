@@ -11,7 +11,7 @@ from library import Library
 
 DEFAULT_FILE_PATH: str = '../data/library.json'
 
-def run_app() -> None:
+def run_cli() -> None:
     library: Library = Library()
 
     helpers.clear_screen()
@@ -65,11 +65,12 @@ def run_app() -> None:
                 helpers.clear_screen()
                 prompts.prompt_convert()
             case 'q':
+                helpers.clear_screen()
                 prompts.prompt_quit(library, DEFAULT_FILE_PATH)
                 return
 
 def main() -> None:
-    run_app()
+    run_cli()
 
 if __name__ == '__main__':
     main()
