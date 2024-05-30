@@ -127,63 +127,109 @@ def prompt_remove(library: Library) -> None:
 def prompt_list(library: Library) -> None:
     books: list[Book] = library.books
 
-    page:      int = 0
-    page_size: int = 5
-    max_page:  int = math.ceil(len(books) / page_size)
+    if books:
+        page:      int = 0
+        page_size: int = 5
+        max_page:  int = math.ceil(len(books) / page_size)
 
-    while True:
-        table: Table = create_table_large()
+        while True:
+            table: Table = create_table_large()
 
-        start: int = page_size * page
-        end:   int = start + page_size
+            start: int = page_size * page
+            end:   int = start + page_size
 
-        end = min(end, len(books))
+            end = min(end, len(books))
 
-        for i in range(start, end):
-            table.add_row(books[i].title, books[i].author, books[i].isbn, books[i].publisher,
-                          books[i].cover, books[i].category, str(books[i].edition),
-                          str(books[i].year), str(books[i].pages))
+            for i in range(start, end):
+                table.add_row(books[i].title, books[i].author, books[i].isbn, books[i].publisher,
+                              books[i].cover, books[i].category, str(books[i].edition),
+                              str(books[i].year), str(books[i].pages))
 
-        rprint(Align(Panel(table, title=f'Page {page + 1} of {max_page}'), align='center'))
+            rprint(Align(Panel(table, title=f'Page {page + 1} of {max_page}'), align='center'))
 
-        prompt: str = Prompt.ask(r'\[n]ext, \[p]rev, \[g]oto, \[q]uit', choices=['n', 'p', 'g', 'q'])
+            if max_page > 1:
+                prompt: str = Prompt.ask(r'\[n]ext, \[p]rev, \[g]oto, \[q]uit',
+                                         choices=['n', 'p', 'g', 'q'])
 
-        match prompt:
-            case 'n':
-                if end != len(books):
-                    page += 1
-            case 'p':
-                if page != 0:
-                    page -= 1
-            case 'g':
-                while True:
-                    page_no: str = Prompt.ask('Page')
+                match prompt:
+                    case 'n':
+                        if end != len(books):
+                            page += 1
+                    case 'p':
+                        if page != 0:
+                            page -= 1
+                    case 'g':
+                        while True:
+                            page_no: str = Prompt.ask('Page')
 
-                    if page_no.isdigit():
-                        page = int(page_no) - 1
+                            if page_no.isdigit():
+                                page = int(page_no) - 1
 
-                        if 0 <= page < max_page:
-                            break
+                                if 0 <= page < max_page:
+                                    break
 
-                    rprint('[red]Enter a valid page number.[/red]')
-            case 'q':
+                            rprint('[red]Enter a valid page number.[/red]')
+                    case 'q':
+                        break
+
+                clear_screen()
+            else:
                 break
-
-        clear_screen()
+    else:
+        print('No books in library.')
 
 def prompt_search(library: Library) -> None:
-    # TODO: add multiple pages to search table if necessary
-
-    table: Table = create_table_small()
-    query: str   = Prompt.ask('Search')
-
+    query: str        = Prompt.ask('Search')
     books: list[Book] = library.search_fuzz(query)
 
-    if books:
-        for book in books:
-            table.add_row(book.title, book.author, book.isbn)
+    clear_screen()
 
-        rprint(Align(Panel(table), align='center'))
+    if books:
+        page:      int = 0
+        page_size: int = 5
+        max_page:  int = math.ceil(len(books) / page_size)
+
+        while True:
+            table: Table = create_table_small()
+
+            start: int = page_size * page
+            end:   int = start + page_size
+
+            end = min(end, len(books))
+
+            for i in range(start, end):
+                table.add_row(books[i].title, books[i].author, books[i].isbn)
+
+            rprint(Align(Panel(table, title=f'Page {page + 1} of {max_page}'), align='center'))
+
+            if max_page > 1:
+                prompt: str = Prompt.ask(r'\[n]ext, \[p]rev, \[g]oto, \[q]uit',
+                                         choices=['n', 'p', 'g', 'q'])
+
+                match prompt:
+                    case 'n':
+                        if end != len(books):
+                            page += 1
+                    case 'p':
+                        if page != 0:
+                            page -= 1
+                    case 'g':
+                        while True:
+                            page_no: str = Prompt.ask('Page')
+
+                            if page_no.isdigit():
+                                page = int(page_no) - 1
+
+                                if 0 <= page < max_page:
+                                    break
+
+                            rprint('[red]Enter a valid page number.[/red]')
+                    case 'q':
+                        break
+
+                clear_screen()
+            else:
+                break
     else:
         print('No books found.')
 
@@ -267,7 +313,6 @@ def run_app() -> None:
             case 'l':
                 clear_screen()
                 prompt_list(library)
-                clear_screen()
             case 's':
                 clear_screen()
                 prompt_search(library)
