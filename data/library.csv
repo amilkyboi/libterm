@@ -1,7 +1,7 @@
-title,author,isbn
-math,prof,1234
-phys,prof,2345
-chem,prof,3456
-math,dude,4567
-phys,dude,5678
-chem,dude,7890
+title,author,isbn,publisher,cover,category,edition,year,pages
+math,prof,1234,not_set,not_set,not_set,0,0,0
+phys,prof,2345,not_set,not_set,not_set,0,0,0
+chem,prof,3456,not_set,not_set,not_set,0,0,0
+math,dude,4567,not_set,not_set,not_set,0,0,0
+phys,dude,5678,not_set,not_set,not_set,0,0,0
+chem,dude,7890,not_set,not_set,not_set,0,0,0

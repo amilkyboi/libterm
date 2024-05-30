@@ -74,7 +74,7 @@ def prompt_list(library: Library) -> None:
     max_page:  int = math.ceil(len(books) / page_size)
 
     while True:
-        table: Table = create_table()
+        table: Table = create_table_large()
 
         start: int = page_size * page
         end:   int = start + page_size
@@ -82,7 +82,9 @@ def prompt_list(library: Library) -> None:
         end = min(end, len(books))
 
         for i in range(start, end):
-            table.add_row(books[i].title, books[i].author, books[i].isbn)
+            table.add_row(books[i].title, books[i].author, books[i].isbn, books[i].publisher,
+                          books[i].cover, books[i].category, str(books[i].edition),
+                          str(books[i].year), str(books[i].pages))
 
         rprint(Align(Panel(table, title=f'Page {page + 1} of {max_page}'), align='center'))
 
@@ -103,7 +105,7 @@ def prompt_list(library: Library) -> None:
 def prompt_search(library: Library) -> None:
     # TODO: add multiple pages to search table if necessary
 
-    table: Table = create_table()
+    table: Table = create_table_small()
     query: str   = Prompt.ask('Search')
 
     books: list[Book] = library.search_fuzz(query)
@@ -125,12 +127,27 @@ def prompt_export() -> None:
         csv_file_path = json_to_csv(DEFAULT_FILE_PATH)
         print(f'File {DEFAULT_FILE_PATH} exported to {csv_file_path}.')
 
-def create_table() -> Table:
+def create_table_small() -> Table:
     table: Table = Table(box=box.HORIZONTALS, row_styles=['', 'dim'])
 
     table.add_column('Title', style='#94e2d5', header_style='#94e2d5')
     table.add_column('Author', style='#74c7ec', header_style='#74c7ec')
     table.add_column('ISBN', style='#b4befe', header_style='#b4befe')
+
+    return table
+
+def create_table_large() -> Table:
+    table: Table = Table(box=box.HORIZONTALS, row_styles=['', 'dim'])
+
+    table.add_column('Title', style='#94e2d5', header_style='#94e2d5')
+    table.add_column('Author', style='#74c7ec', header_style='#74c7ec')
+    table.add_column('ISBN', style='#b4befe', header_style='#b4befe')
+    table.add_column('Publisher', style='#94e2d5', header_style='#94e2d5')
+    table.add_column('Cover', style='#74c7ec', header_style='#74c7ec')
+    table.add_column('Category', style='#b4befe', header_style='#b4befe')
+    table.add_column('Edition', style='#94e2d5', header_style='#94e2d5')
+    table.add_column('Year', style='#74c7ec', header_style='#74c7ec')
+    table.add_column('Pages', style='#b4befe', header_style='#b4befe')
 
     return table
 
