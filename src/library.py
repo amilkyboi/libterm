@@ -16,7 +16,7 @@ class Library:
         self.index_from_isbn:   dict[str, int]              = {}
 
     def add_book(self, book: Book) -> None:
-        # NOTE: ony called if the book doesn't exist; enforced in main.py
+        # NOTE: only called if the book doesn't exist; enforced in main.py
         self.books.append(book)
 
         book_index: int = len(self.books) - 1
@@ -26,18 +26,15 @@ class Library:
         self.index_from_isbn[book.isbn] = book_index
 
     def edit_book(self, book: Book, new_title: str, new_author: str, new_isbn: str) -> None:
-        # NOTE: ony called if the book exists; enforced in main.py
+        # NOTE: only called if the book exists and the new ISBN isn't taken; enforced in main.py
 
-        # FIXME: don't allow the new ISBN to conflict with any existing books!
+        new_book: Book = Book(new_title, new_author, new_isbn)
 
-        # FIXME: must update dictionaries!
-
-        book.title  = new_title
-        book.author = new_author
-        book.isbn   = new_isbn
+        self.remove_book(book)
+        self.add_book(new_book)
 
     def remove_book(self, book: Book) -> None:
-        # NOTE: ony called if the book exists; enforced in main.py
+        # NOTE: only called if the book exists; enforced in main.py
         isbn:       str = book.isbn
         book_index: int = self.index_from_isbn[isbn]
 

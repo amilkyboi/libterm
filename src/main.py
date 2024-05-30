@@ -88,24 +88,27 @@ def prompt_edit(library: Library) -> None:
         book: Book | None = library.book_by_isbn(isbn)
 
         if book:
-            new_title: str = Prompt.ask('New title')
-
-            if new_title.lower() == 'q':
-                break
-
-            new_author: str = Prompt.ask('New author')
-
-            if new_author.lower() == 'q':
-                break
-
             new_isbn: str = Prompt.ask('New ISBN')
 
             if new_isbn.lower() == 'q':
                 break
 
-            library.edit_book(book, new_title, new_author, new_isbn)
+            if new_isbn in library.index_from_isbn:
+                status = f'ISBN: {new_isbn} already taken.'
+            else:
+                new_title: str = Prompt.ask('New title')
 
-            status = f'Title: {new_title}, ISBN: {new_isbn} edited successfully.'
+                if new_title.lower() == 'q':
+                    break
+
+                new_author: str = Prompt.ask('New author')
+
+                if new_author.lower() == 'q':
+                    break
+
+                library.edit_book(book, new_title, new_author, new_isbn)
+
+                status = f'Title: {new_title}, ISBN: {new_isbn} edited successfully.'
         else:
             status = f'ISBN: {isbn} not found.'
 
