@@ -15,22 +15,22 @@ class Library:
         self.index_from_author: defaultdict[str, list[int]] = defaultdict(list)
         self.index_from_isbn:   dict[str, int]              = {}
 
-    def add_book(self, book: Book, suppress_output: bool = False) -> None:
+    def add_book(self, book: Book, suppress_output: bool = False) -> str | None:
         if self.book_by_isbn(book.isbn):
-            print(f'Title: {book.title}, ISBN: {book.isbn} already exists.')
-        else:
-            self.books.append(book)
+            return f'Title: {book.title}, ISBN: {book.isbn} already exists.'
 
-            book_index: int = len(self.books) - 1
+        self.books.append(book)
 
-            self.index_from_title[book.title].append(book_index)
-            self.index_from_author[book.author].append(book_index)
-            self.index_from_isbn[book.isbn] = book_index
+        book_index: int = len(self.books) - 1
 
-            if not suppress_output:
-                print(f'Title: {book.title}, ISBN: {book.isbn} added successfully.')
+        self.index_from_title[book.title].append(book_index)
+        self.index_from_author[book.author].append(book_index)
+        self.index_from_isbn[book.isbn] = book_index
 
-    def remove_book(self, isbn: str) -> None:
+        if not suppress_output:
+            return f'Title: {book.title}, ISBN: {book.isbn} added successfully.'
+
+    def remove_book(self, isbn: str) -> str | None:
         book: Book | None = self.book_by_isbn(isbn)
 
         if book:
@@ -60,9 +60,9 @@ class Library:
                 if idx > book_index:
                     self.index_from_isbn[isbn_key] -= 1
 
-            print(f'Title: {book.title}, ISBN: {isbn} removed successfully.')
-        else:
-            print(f'ISBN: {isbn} not found.')
+            return f'Title: {book.title}, ISBN: {isbn} removed successfully.'
+
+        return f'ISBN: {isbn} not found.'
 
     def books_by_title(self, title: str) -> list[Book]:
         return [self.books[i] for i in self.index_from_title[title]]

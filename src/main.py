@@ -2,9 +2,12 @@
 
 import os
 import json
+import math
 
 from rich import box
 from rich.table import Table
+from rich.panel import Panel
+from rich.align import Align
 from rich import print as rprint
 from rich.prompt import Prompt, Confirm
 
@@ -18,9 +21,14 @@ def clear_screen() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def prompt_add(library: Library) -> None:
-    print('Add mode. Press [q] to exit.')
+    status: str | None = None
 
     while True:
+        print('Add mode. Press [q] to exit.')
+
+        if status:
+            print(f'STATUS: {status}')
+
         title: str = Prompt.ask('Title')
 
         if title.lower() == 'q':
@@ -36,37 +44,77 @@ def prompt_add(library: Library) -> None:
         if isbn.lower() == 'q':
             break
 
-        library.add_book(Book(title, author, isbn))
+        status: str | None = library.add_book(Book(title, author, isbn))
+
+        clear_screen()
 
 def prompt_remove(library: Library) -> None:
-    print('Remove mode. Press [q] to exit.')
+    status: str | None = None
 
     while True:
+        print('Remove mode. Press [q] to exit.')
+
+        if status:
+            print(f'STATUS: {status}')
+
         isbn: str = Prompt.ask('ISBN')
 
         if isbn.lower() == 'q':
             break
 
-        library.remove_book(isbn)
+        status: str | None = library.remove_book(isbn)
+
+        clear_screen()
 
 def prompt_list(library: Library) -> None:
-    table: Table = create_table()
+    books: list[Book] = library.books
 
-    for book in library.books:
-        table.add_row(book.title, book.author, book.isbn)
+    page:      int = 0
+    page_size: int = 5
+    max_page:  int = math.ceil(len(books) / page_size)
 
-    rprint(table)
+    while True:
+        table: Table = create_table()
+
+        start: int = page_size * page
+        end:   int = start + page_size
+
+        end = min(end, len(books))
+
+        for i in range(start, end):
+            table.add_row(books[i].title, books[i].author, books[i].isbn)
+
+        rprint(Align(Panel(table, title=f'Page {page + 1} of {max_page}'), align='center'))
+
+        prompt: str = Prompt.ask(r'\[u]p, \[d]own, \[q]uit', choices=['u', 'd', 'q'])
+
+        match prompt:
+            case 'u':
+                if page != 0:
+                    page -= 1
+            case 'd':
+                if end != len(books):
+                    page += 1
+            case 'q':
+                break
+
+        clear_screen()
 
 def prompt_search(library: Library) -> None:
+    # TODO: add multiple pages to search table if necessary
+
     table: Table = create_table()
     query: str   = Prompt.ask('Search')
 
     books: list[Book] = library.search_fuzz(query)
 
-    for book in books:
-        table.add_row(book.title, book.author, book.isbn)
+    if books:
+        for book in books:
+            table.add_row(book.title, book.author, book.isbn)
 
-    rprint(table)
+        rprint(Align(Panel(table), align='center'))
+    else:
+        print('No books found.')
 
 def prompt_export() -> None:
     # TODO: deal with file already existing
@@ -119,12 +167,15 @@ def run_app() -> None:
             case 'a':
                 clear_screen()
                 prompt_add(library)
+                clear_screen()
             case 'r':
                 clear_screen()
                 prompt_remove(library)
+                clear_screen()
             case 'l':
                 clear_screen()
                 prompt_list(library)
+                clear_screen()
             case 's':
                 clear_screen()
                 prompt_search(library)
