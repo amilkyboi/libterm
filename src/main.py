@@ -39,8 +39,8 @@ def run_app() -> None:
             return
 
     while True:
-        user_input: str = Prompt.ask(r'\[a]dd, \[e]dit, \[r]emove, \[l]ist, \[s]earch, e\[x]port, \[q]uit',
-                                     choices=['a', 'e', 'r', 'l', 's', 'x', 'q'])
+        user_input: str = Prompt.ask(r'\[a]dd, \[e]dit, \[r]emove, \[l]ist, \[s]earch, \[c]onvert, \[q]uit',
+                                     choices=['a', 'e', 'r', 'l', 's', 'c', 'q'])
 
         match user_input:
             case 'a':
@@ -61,9 +61,9 @@ def run_app() -> None:
             case 's':
                 helpers.clear_screen()
                 prompts.prompt_search(library)
-            case 'x':
+            case 'c':
                 helpers.clear_screen()
-                prompts.prompt_export(DEFAULT_FILE_PATH)
+                prompts.prompt_convert()
             case 'q':
                 helpers.print_info(library.update_file(DEFAULT_FILE_PATH))
                 return

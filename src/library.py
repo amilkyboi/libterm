@@ -133,9 +133,9 @@ class Library:
     def update_file(self, file_path: str) -> str:
         existing_file: bool = os.path.isfile(file_path)
 
-        books_data: list[dict[str, str]] = [vars(book) for book in self.books]
+        books_data: list[dict] = [vars(book) for book in self.books]
 
-        existing_data: list[dict[str, str]] | None = None
+        existing_data: list[dict] | None = None
 
         if existing_file:
             with open(file_path, 'r', encoding='utf-8') as json_file:

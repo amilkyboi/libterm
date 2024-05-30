@@ -5,10 +5,10 @@ import math
 from rich.align import Align
 from rich.panel import Panel
 from rich.table import Table
-from rich.prompt import Confirm, Prompt
+from rich.prompt import Prompt
 from rich import print as rprint
 
-import export
+import convert
 import helpers
 from book import Book
 from library import Library
@@ -229,11 +229,27 @@ def prompt_search(library: Library) -> None:
     else:
         helpers.print_info('No books found.')
 
-def prompt_export(json_file_path: str) -> None:
+def prompt_convert() -> None:
     # TODO: deal with file already existing
+    # TODO: when no JSON file is located and a CSV is converted to a JSON, the program will delete
+    #       it; this needs to be fixed
 
-    do_export = Confirm.ask('Convert the saved JSON to CSV?')
+    choice: str = Prompt.ask(r'\[i]mport, \[e]xport, \[q]uit', choices=['i', 'e', 'q'])
 
-    if do_export:
-        csv_file_path = export.json_to_csv(json_file_path)
-        helpers.print_info(f'File {json_file_path} exported to {csv_file_path}.')
+    match choice:
+        case 'i':
+            file_name: str = Prompt.ask('CSV file name')
+
+            try:
+                convert.csv_to_json(file_name)
+                helpers.print_info(f'File {file_name}.csv imported to {file_name}.json.')
+            except FileNotFoundError:
+                helpers.print_warn(f'The {file_name}.csv file could not be located.')
+        case 'e':
+            file_name: str = Prompt.ask('JSON file name')
+
+            try:
+                convert.json_to_csv(file_name)
+                helpers.print_info(f'File {file_name}.json exported to {file_name}.csv.')
+            except FileNotFoundError:
+                helpers.print_warn(f'The {file_name}.json file could not be located.')

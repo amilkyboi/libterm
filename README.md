@@ -10,6 +10,7 @@ Personal library management system in the terminal.
 - [x] Fuzzy finding for titles, authors, and ISBN numbers
 - [x] Optionally export data to CSV
 - [x] Add the ability to edit existing books
+- [x] Optionally import data from CSV
 - [ ] Add JSON schema
 
 ### Long-term
