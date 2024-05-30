@@ -65,7 +65,7 @@ def run_app() -> None:
                 helpers.clear_screen()
                 prompts.prompt_convert()
             case 'q':
-                helpers.print_info(library.update_file(DEFAULT_FILE_PATH))
+                prompts.prompt_quit(library, DEFAULT_FILE_PATH)
                 return
 
 def main() -> None:

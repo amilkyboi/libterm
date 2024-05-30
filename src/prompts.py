@@ -5,7 +5,7 @@ import math
 from rich.align import Align
 from rich.panel import Panel
 from rich.table import Table
-from rich.prompt import Prompt
+from rich.prompt import Confirm, Prompt
 from rich import print as rprint
 
 import convert
@@ -253,3 +253,11 @@ def prompt_convert() -> None:
                 helpers.print_info(f'File {file_name}.json exported to {file_name}.csv.')
             except FileNotFoundError:
                 helpers.print_warn(f'The {file_name}.json file could not be located.')
+
+def prompt_quit(library: Library, file_path: str) -> None:
+    save: bool = Confirm.ask('Save library', default=True)
+
+    if save:
+        helpers.print_info(library.update_file(file_path))
+    else:
+        helpers.print_info('Library not saved.')
