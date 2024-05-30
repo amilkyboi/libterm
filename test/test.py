@@ -13,7 +13,7 @@ from library import Library
 library = Library()
 
 for i in range(1000):
-    library.add_book(Book(f'title {i}', f'author {i % 100}', f'{i:013d}'), suppress_output=True)
+    library.add_book(Book(f'title {i}', f'author {i % 100}', f'{i:013d}'))
 
 query = 'title 50'
 '''

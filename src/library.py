@@ -15,54 +15,51 @@ class Library:
         self.index_from_author: defaultdict[str, list[int]] = defaultdict(list)
         self.index_from_isbn:   dict[str, int]              = {}
 
-    def add_book(self, book: Book, suppress_output: bool = False) -> None:
-        if self.book_by_isbn(book.isbn):
-            print(f'Title: {book.title}, ISBN: {book.isbn} already exists.')
-        else:
-            self.books.append(book)
+    def add_book(self, book: Book) -> None:
+        # NOTE: only called if the book doesn't exist; enforced in main.py
+        self.books.append(book)
 
-            book_index: int = len(self.books) - 1
+        book_index: int = len(self.books) - 1
 
-            self.index_from_title[book.title].append(book_index)
-            self.index_from_author[book.author].append(book_index)
-            self.index_from_isbn[book.isbn] = book_index
+        self.index_from_title[book.title].append(book_index)
+        self.index_from_author[book.author].append(book_index)
+        self.index_from_isbn[book.isbn] = book_index
 
-            if not suppress_output:
-                print(f'Title: {book.title}, ISBN: {book.isbn} added successfully.')
+    def edit_book(self, book: Book, new_title: str, new_author: str, new_isbn: str) -> None:
+        # NOTE: only called if the book exists and the new ISBN isn't taken; enforced in main.py
+        new_book: Book = Book(new_title, new_author, new_isbn)
 
-    def remove_book(self, isbn: str) -> None:
-        book: Book | None = self.book_by_isbn(isbn)
+        self.remove_book(book)
+        self.add_book(new_book)
 
-        if book:
-            book_index: int = self.index_from_isbn[isbn]
+    def remove_book(self, book: Book) -> None:
+        # NOTE: only called if the book exists; enforced in main.py
+        isbn:       str = book.isbn
+        book_index: int = self.index_from_isbn[isbn]
 
-            del self.books[book_index]
+        del self.books[book_index]
 
-            self.index_from_title[book.title].remove(book_index)
-            if not self.index_from_title[book.title]:
-                del self.index_from_title[book.title]
+        self.index_from_title[book.title].remove(book_index)
+        if not self.index_from_title[book.title]:
+            del self.index_from_title[book.title]
 
-            self.index_from_author[book.author].remove(book_index)
-            if not self.index_from_author[book.author]:
-                del self.index_from_author[book.author]
+        self.index_from_author[book.author].remove(book_index)
+        if not self.index_from_author[book.author]:
+            del self.index_from_author[book.author]
 
-            del self.index_from_isbn[isbn]
+        del self.index_from_isbn[isbn]
 
-            for title in self.index_from_title:
-                self.index_from_title[title] = [i - 1 if i > book_index else i for i in
-                                                self.index_from_title[title]]
+        for title in self.index_from_title:
+            self.index_from_title[title] = [i - 1 if i > book_index else i for i in
+                                            self.index_from_title[title]]
 
-            for author in self.index_from_author:
-                self.index_from_author[author] = [i - 1 if i > book_index else i for i in
-                                                  self.index_from_author[author]]
+        for author in self.index_from_author:
+            self.index_from_author[author] = [i - 1 if i > book_index else i for i in
+                                              self.index_from_author[author]]
 
-            for isbn_key, idx in self.index_from_isbn.items():
-                if idx > book_index:
-                    self.index_from_isbn[isbn_key] -= 1
-
-            print(f'Title: {book.title}, ISBN: {isbn} removed successfully.')
-        else:
-            print(f'ISBN: {isbn} not found.')
+        for isbn_key, idx in self.index_from_isbn.items():
+            if idx > book_index:
+                self.index_from_isbn[isbn_key] -= 1
 
     def books_by_title(self, title: str) -> list[Book]:
         return [self.books[i] for i in self.index_from_title[title]]
@@ -132,12 +129,12 @@ class Library:
 
         return [self.books[i] for i in matched_indices]
 
-    def update_file(self, file_path: str) -> None:
+    def update_file(self, file_path: str) -> str:
         existing_file: bool = os.path.isfile(file_path)
 
-        books_data: list[dict[str, str]] = [vars(book) for book in self.books]
+        books_data: list[dict] = [vars(book) for book in self.books]
 
-        existing_data: list[dict[str, str]] | None = None
+        existing_data: list[dict] | None = None
 
         if existing_file:
             with open(file_path, 'r', encoding='utf-8') as json_file:
@@ -148,35 +145,35 @@ class Library:
 
         if existing_data == books_data:
             if self.books:
-                print(f'File {file_path} already up-to-date. No changes made.')
-            else:
-                os.remove(file_path)
-                print(f'File {file_path} already up-to-date and will be removed due to empty list.')
-        else:
-            if self.books:
-                with open(file_path, 'w', encoding='utf-8') as json_file:
-                    json.dump(books_data, json_file, indent=4)
+                return f'File {file_path} already up-to-date. No changes made.'
 
-                if existing_file:
-                    print(f'Updated file {file_path} successfully.')
-                else:
-                    print(f'Created file {file_path} successfully.')
-            else:
-                if existing_file:
-                    os.remove(file_path)
-                    print(f'Removed file {file_path} as the book list is empty.')
-                else:
-                    print('No books in list. File not created.')
+            os.remove(file_path)
+            return f'File {file_path} already up-to-date and will be removed due to empty list.'
 
-    def load_file(self, file_path: str) -> None:
+        if self.books:
+            with open(file_path, 'w', encoding='utf-8') as json_file:
+                json.dump(books_data, json_file, indent=4)
+
+            if existing_file:
+                return f'Updated file {file_path} successfully.'
+
+            return f'Created file {file_path} successfully.'
+
+        if existing_file:
+            os.remove(file_path)
+            return f'Removed file {file_path} as the book list is empty.'
+
+        return 'No books in list. File not created.'
+
+    def load_file(self, file_path: str) -> str:
         try:
             with open(file_path, 'r', encoding='utf-8') as json_file:
-                books_data: list[dict[str, str]] | list = json.load(json_file)
+                books_data: list[dict] | list = json.load(json_file)
 
                 for book_data in books_data:
-                    self.add_book(Book(**book_data), suppress_output=True)
+                    self.add_book(Book(**book_data))
 
-            print(f'JSON data loaded from file {file_path}.')
+            return f'JSON data loaded from file {file_path}.'
         except FileNotFoundError as e:
             raise e
         except json.JSONDecodeError as e:

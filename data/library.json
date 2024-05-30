@@ -2,31 +2,67 @@
     {
         "title": "math",
         "author": "prof",
-        "isbn": "1234"
+        "isbn": "1234",
+        "publisher": "not_set",
+        "cover": "not_set",
+        "category": "not_set",
+        "edition": 0,
+        "year": 0,
+        "pages": 0
     },
     {
         "title": "phys",
         "author": "prof",
-        "isbn": "2345"
+        "isbn": "2345",
+        "publisher": "not_set",
+        "cover": "not_set",
+        "category": "not_set",
+        "edition": 0,
+        "year": 0,
+        "pages": 0
     },
     {
         "title": "chem",
         "author": "prof",
-        "isbn": "3456"
+        "isbn": "3456",
+        "publisher": "not_set",
+        "cover": "not_set",
+        "category": "not_set",
+        "edition": 0,
+        "year": 0,
+        "pages": 0
     },
     {
         "title": "math",
         "author": "dude",
-        "isbn": "4567"
+        "isbn": "4567",
+        "publisher": "not_set",
+        "cover": "not_set",
+        "category": "not_set",
+        "edition": 0,
+        "year": 0,
+        "pages": 0
     },
     {
         "title": "phys",
         "author": "dude",
-        "isbn": "5678"
+        "isbn": "5678",
+        "publisher": "not_set",
+        "cover": "not_set",
+        "category": "not_set",
+        "edition": 0,
+        "year": 0,
+        "pages": 0
     },
     {
         "title": "chem",
         "author": "dude",
-        "isbn": "7890"
+        "isbn": "7890",
+        "publisher": "not_set",
+        "cover": "not_set",
+        "category": "not_set",
+        "edition": 0,
+        "year": 0,
+        "pages": 0
     }
 ]
