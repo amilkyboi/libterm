@@ -23,28 +23,79 @@ def clear_screen() -> None:
 def prompt_add(library: Library) -> None:
     status: str | None = None
 
+    # TODO: add secondary prompt where more details can be added
+
     while True:
         print('Add mode. Press [q] to exit.')
 
         if status:
             print(f'STATUS: {status}')
 
-        title: str = Prompt.ask('Title')
-
-        if title.lower() == 'q':
-            break
-
-        author: str = Prompt.ask('Author')
-
-        if author.lower() == 'q':
-            break
-
         isbn: str = Prompt.ask('ISBN')
 
         if isbn.lower() == 'q':
             break
 
-        status: str | None = library.add_book(Book(title, author, isbn))
+        book: Book | None = library.book_by_isbn(isbn)
+
+        if book:
+            status = f'Title: {book.title}, ISBN: {book.isbn} already exists.'
+        else:
+            title: str = Prompt.ask('Title')
+
+            if title.lower() == 'q':
+                break
+
+            author: str = Prompt.ask('Author')
+
+            if author.lower() == 'q':
+                break
+
+            library.add_book(Book(title, author, isbn))
+
+            status = f'Title: {title}, ISBN: {isbn} added successfully.'
+
+        clear_screen()
+
+def prompt_edit(library: Library) -> None:
+    status: str | None = None
+
+    # TODO: add secondary prompt where more details can be added
+
+    while True:
+        print('Edit mode. Press [q] to exit.')
+
+        if status:
+            print(f'STATUS: {status}')
+
+        isbn: str = Prompt.ask('Current ISBN')
+
+        if isbn.lower() == 'q':
+            break
+
+        book: Book | None = library.book_by_isbn(isbn)
+
+        if book:
+            new_title: str = Prompt.ask('New title')
+
+            if new_title.lower() == 'q':
+                break
+
+            new_author: str = Prompt.ask('New author')
+
+            if new_author.lower() == 'q':
+                break
+
+            new_isbn: str = Prompt.ask('New ISBN')
+
+            if new_isbn.lower() == 'q':
+                break
+
+            library.edit_book(book, new_title, new_author, new_isbn)
+
+            status = f'Title: {new_title}, ISBN: {new_isbn} edited successfully.'
+        else:
+            status = f'ISBN: {isbn} not found.'
 
         clear_screen()
 
@@ -62,7 +113,14 @@ def prompt_remove(library: Library) -> None:
         if isbn.lower() == 'q':
             break
 
-        status: str | None = library.remove_book(isbn)
+        book: Book | None = library.book_by_isbn(isbn)
+
+        if book:
+            library.remove_book(book)
+
+            status = f'Title: {book.title}, ISBN: {book.isbn} removed successfully.'
+        else:
+            status = f'ISBN: {isbn} not found.'
 
         clear_screen()
 
@@ -190,13 +248,17 @@ def run_app() -> None:
             return
 
     while True:
-        user_input: str = Prompt.ask(r'\[a]dd, \[r]emove, \[l]ist, \[s]earch, \[e]xport, \[q]uit',
-                                     choices=['a', 'r', 'l', 's', 'e', 'q'])
+        user_input: str = Prompt.ask(r'\[a]dd, \[e]dit, \[r]emove, \[l]ist, \[s]earch, e\[x]port, \[q]uit',
+                                     choices=['a', 'e', 'r', 'l', 's', 'x', 'q'])
 
         match user_input:
             case 'a':
                 clear_screen()
                 prompt_add(library)
+                clear_screen()
+            case 'e':
+                clear_screen()
+                prompt_edit(library)
                 clear_screen()
             case 'r':
                 clear_screen()
@@ -209,7 +271,7 @@ def run_app() -> None:
             case 's':
                 clear_screen()
                 prompt_search(library)
-            case 'e':
+            case 'x':
                 clear_screen()
                 prompt_export()
             case 'q':

@@ -15,10 +15,8 @@ class Library:
         self.index_from_author: defaultdict[str, list[int]] = defaultdict(list)
         self.index_from_isbn:   dict[str, int]              = {}
 
-    def add_book(self, book: Book, suppress_output: bool = False) -> str | None:
-        if self.book_by_isbn(book.isbn):
-            return f'Title: {book.title}, ISBN: {book.isbn} already exists.'
-
+    def add_book(self, book: Book) -> None:
+        # NOTE: ony called if the book doesn't exist; enforced in main.py
         self.books.append(book)
 
         book_index: int = len(self.books) - 1
@@ -27,42 +25,40 @@ class Library:
         self.index_from_author[book.author].append(book_index)
         self.index_from_isbn[book.isbn] = book_index
 
-        if not suppress_output:
-            return f'Title: {book.title}, ISBN: {book.isbn} added successfully.'
+    def edit_book(self, book: Book, new_title: str, new_author: str, new_isbn: str) -> None:
+        # NOTE: ony called if the book exists; enforced in main.py
+        book.title  = new_title
+        book.author = new_author
+        book.isbn   = new_isbn
 
-    def remove_book(self, isbn: str) -> str | None:
-        book: Book | None = self.book_by_isbn(isbn)
+    def remove_book(self, book: Book) -> None:
+        # NOTE: ony called if the book exists; enforced in main.py
+        isbn:       str = book.isbn
+        book_index: int = self.index_from_isbn[isbn]
 
-        if book:
-            book_index: int = self.index_from_isbn[isbn]
+        del self.books[book_index]
 
-            del self.books[book_index]
+        self.index_from_title[book.title].remove(book_index)
+        if not self.index_from_title[book.title]:
+            del self.index_from_title[book.title]
 
-            self.index_from_title[book.title].remove(book_index)
-            if not self.index_from_title[book.title]:
-                del self.index_from_title[book.title]
+        self.index_from_author[book.author].remove(book_index)
+        if not self.index_from_author[book.author]:
+            del self.index_from_author[book.author]
 
-            self.index_from_author[book.author].remove(book_index)
-            if not self.index_from_author[book.author]:
-                del self.index_from_author[book.author]
+        del self.index_from_isbn[isbn]
 
-            del self.index_from_isbn[isbn]
+        for title in self.index_from_title:
+            self.index_from_title[title] = [i - 1 if i > book_index else i for i in
+                                            self.index_from_title[title]]
 
-            for title in self.index_from_title:
-                self.index_from_title[title] = [i - 1 if i > book_index else i for i in
-                                                self.index_from_title[title]]
+        for author in self.index_from_author:
+            self.index_from_author[author] = [i - 1 if i > book_index else i for i in
+                                                self.index_from_author[author]]
 
-            for author in self.index_from_author:
-                self.index_from_author[author] = [i - 1 if i > book_index else i for i in
-                                                  self.index_from_author[author]]
-
-            for isbn_key, idx in self.index_from_isbn.items():
-                if idx > book_index:
-                    self.index_from_isbn[isbn_key] -= 1
-
-            return f'Title: {book.title}, ISBN: {isbn} removed successfully.'
-
-        return f'ISBN: {isbn} not found.'
+        for isbn_key, idx in self.index_from_isbn.items():
+            if idx > book_index:
+                self.index_from_isbn[isbn_key] -= 1
 
     def books_by_title(self, title: str) -> list[Book]:
         return [self.books[i] for i in self.index_from_title[title]]
@@ -171,10 +167,10 @@ class Library:
     def load_file(self, file_path: str) -> None:
         try:
             with open(file_path, 'r', encoding='utf-8') as json_file:
-                books_data: list[dict[str, str]] | list = json.load(json_file)
+                books_data: list[dict] | list = json.load(json_file)
 
                 for book_data in books_data:
-                    self.add_book(Book(**book_data), suppress_output=True)
+                    self.add_book(Book(**book_data))
 
             print(f'JSON data loaded from file {file_path}.')
         except FileNotFoundError as e:
