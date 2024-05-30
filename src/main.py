@@ -20,16 +20,28 @@ DEFAULT_FILE_PATH: str = '../data/library.json'
 def clear_screen() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def print_mode(message: str) -> None:
+    rprint(rf'[green]MODE: {message}. Press \[q] to exit.[/green]')
+
+def print_info(message: str) -> None:
+    rprint(f'[blue]INFO: {message}[/blue]')
+
+def print_warn(message: str) -> None:
+    rprint(f'[yellow]WARN: {message}[/yellow]')
+
+def print_error(message: str) -> None:
+    rprint(f'[red]ERROR: {message}[/red]')
+
 def prompt_add(library: Library) -> None:
     status: str | None = None
 
     # TODO: add secondary prompt where more details can be added
 
     while True:
-        print('Add mode. Press [q] to exit.')
+        print_mode('Add')
 
         if status:
-            print(f'STATUS: {status}')
+            print_info(status)
 
         isbn: str = Prompt.ask('ISBN')
 
@@ -63,10 +75,10 @@ def prompt_edit(library: Library) -> None:
     # TODO: add secondary prompt where more details can be added
 
     while True:
-        print('Edit mode. Press [q] to exit.')
+        print_mode('Edit')
 
         if status:
-            print(f'STATUS: {status}')
+            print_info(status)
 
         isbn: str = Prompt.ask('Current ISBN')
 
@@ -103,10 +115,10 @@ def prompt_remove(library: Library) -> None:
     status: str | None = None
 
     while True:
-        print('Remove mode. Press [q] to exit.')
+        print_mode('Remove')
 
         if status:
-            print(f'STATUS: {status}')
+            print_info(status)
 
         isbn: str = Prompt.ask('ISBN')
 
@@ -168,7 +180,7 @@ def prompt_list(library: Library) -> None:
                                 if 0 <= page < max_page:
                                     break
 
-                            rprint('[red]Enter a valid page number.[/red]')
+                            print_error('Enter a valid page number.')
                     case 'q':
                         break
 
@@ -176,7 +188,7 @@ def prompt_list(library: Library) -> None:
             else:
                 break
     else:
-        print('No books in library.')
+        print_info('No books in library.')
 
 def prompt_search(library: Library) -> None:
     query: str        = Prompt.ask('Search')
@@ -223,7 +235,7 @@ def prompt_search(library: Library) -> None:
                                 if 0 <= page < max_page:
                                     break
 
-                            rprint('[red]Enter a valid page number.[/red]')
+                            print_error('Enter a valid page number.')
                     case 'q':
                         break
 
@@ -231,7 +243,7 @@ def prompt_search(library: Library) -> None:
             else:
                 break
     else:
-        print('No books found.')
+        print_info('No books found.')
 
 def prompt_export() -> None:
     # TODO: deal with file already existing
@@ -240,7 +252,7 @@ def prompt_export() -> None:
 
     if do_export:
         csv_file_path = json_to_csv(DEFAULT_FILE_PATH)
-        print(f'File {DEFAULT_FILE_PATH} exported to {csv_file_path}.')
+        print_info(f'File {DEFAULT_FILE_PATH} exported to {csv_file_path}.')
 
 def create_table_small() -> Table:
     table: Table = Table(box=box.HORIZONTALS, row_styles=['', 'dim'])
@@ -272,9 +284,9 @@ def run_app() -> None:
     clear_screen()
 
     try:
-        library.load_file(DEFAULT_FILE_PATH)
+        print_info(library.load_file(DEFAULT_FILE_PATH))
     except FileNotFoundError:
-        print(f'The {DEFAULT_FILE_PATH} file could not be located.')
+        print_warn(f'The {DEFAULT_FILE_PATH} file could not be located.')
 
         while True:
             choice: bool = Confirm.ask(f'Create a new {DEFAULT_FILE_PATH} file?')
@@ -288,9 +300,9 @@ def run_app() -> None:
         is_empty: bool = os.stat(DEFAULT_FILE_PATH).st_size == 0
 
         if is_empty:
-            print(f'Empty file {DEFAULT_FILE_PATH}, continuing.')
+            print_info(f'Empty file {DEFAULT_FILE_PATH}, continuing.')
         else:
-            print(f'ERROR: Error decoding JSON from file {DEFAULT_FILE_PATH}: {e}')
+            print_error(f'Could not decode JSON from file {DEFAULT_FILE_PATH}: {e}')
             return
 
     while True:
@@ -320,7 +332,7 @@ def run_app() -> None:
                 clear_screen()
                 prompt_export()
             case 'q':
-                library.update_file(DEFAULT_FILE_PATH)
+                print_info(library.update_file(DEFAULT_FILE_PATH))
                 return
 
 def main() -> None:

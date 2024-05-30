@@ -16,3 +16,4 @@ Personal library management system in the terminal.
 
 - [ ] Use a proper TUI framework
 - [ ] Store library in an actual database
+- [ ] Support persistent user settings

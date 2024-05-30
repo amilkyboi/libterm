@@ -27,6 +27,11 @@ class Library:
 
     def edit_book(self, book: Book, new_title: str, new_author: str, new_isbn: str) -> None:
         # NOTE: ony called if the book exists; enforced in main.py
+
+        # FIXME: don't allow the new ISBN to conflict with any existing books!
+
+        # FIXME: must update dictionaries!
+
         book.title  = new_title
         book.author = new_author
         book.isbn   = new_isbn
@@ -128,7 +133,7 @@ class Library:
 
         return [self.books[i] for i in matched_indices]
 
-    def update_file(self, file_path: str) -> None:
+    def update_file(self, file_path: str) -> str:
         existing_file: bool = os.path.isfile(file_path)
 
         books_data: list[dict[str, str]] = [vars(book) for book in self.books]
@@ -144,27 +149,27 @@ class Library:
 
         if existing_data == books_data:
             if self.books:
-                print(f'File {file_path} already up-to-date. No changes made.')
-            else:
-                os.remove(file_path)
-                print(f'File {file_path} already up-to-date and will be removed due to empty list.')
-        else:
-            if self.books:
-                with open(file_path, 'w', encoding='utf-8') as json_file:
-                    json.dump(books_data, json_file, indent=4)
+                return f'File {file_path} already up-to-date. No changes made.'
 
-                if existing_file:
-                    print(f'Updated file {file_path} successfully.')
-                else:
-                    print(f'Created file {file_path} successfully.')
-            else:
-                if existing_file:
-                    os.remove(file_path)
-                    print(f'Removed file {file_path} as the book list is empty.')
-                else:
-                    print('No books in list. File not created.')
+            os.remove(file_path)
+            return f'File {file_path} already up-to-date and will be removed due to empty list.'
 
-    def load_file(self, file_path: str) -> None:
+        if self.books:
+            with open(file_path, 'w', encoding='utf-8') as json_file:
+                json.dump(books_data, json_file, indent=4)
+
+            if existing_file:
+                return f'Updated file {file_path} successfully.'
+
+            return f'Created file {file_path} successfully.'
+
+        if existing_file:
+            os.remove(file_path)
+            return f'Removed file {file_path} as the book list is empty.'
+
+        return 'No books in list. File not created.'
+
+    def load_file(self, file_path: str) -> str:
         try:
             with open(file_path, 'r', encoding='utf-8') as json_file:
                 books_data: list[dict] | list = json.load(json_file)
@@ -172,7 +177,7 @@ class Library:
                 for book_data in books_data:
                     self.add_book(Book(**book_data))
 
-            print(f'JSON data loaded from file {file_path}.')
+            return f'JSON data loaded from file {file_path}.'
         except FileNotFoundError as e:
             raise e
         except json.JSONDecodeError as e:
