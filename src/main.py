@@ -88,7 +88,7 @@ def prompt_list(library: Library) -> None:
 
         rprint(Align(Panel(table, title=f'Page {page + 1} of {max_page}'), align='center'))
 
-        prompt: str = Prompt.ask(r'\[u]p, \[d]own, \[q]uit', choices=['u', 'd', 'q'])
+        prompt: str = Prompt.ask(r'\[u]p, \[d]own, \[g]oto, \[q]uit', choices=['u', 'd', 'g', 'q'])
 
         match prompt:
             case 'u':
@@ -97,6 +97,17 @@ def prompt_list(library: Library) -> None:
             case 'd':
                 if end != len(books):
                     page += 1
+            case 'g':
+                while True:
+                    page_no: str = Prompt.ask('Page')
+
+                    if page_no.isdigit():
+                        page = int(page_no) - 1
+
+                        if 0 <= page < max_page:
+                            break
+
+                    rprint('[red]Enter a valid page number.[/red]')
             case 'q':
                 break
 
@@ -153,6 +164,8 @@ def create_table_large() -> Table:
 
 def run_app() -> None:
     library: Library = Library()
+
+    clear_screen()
 
     try:
         library.load_file(DEFAULT_FILE_PATH)
