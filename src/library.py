@@ -56,7 +56,7 @@ class Library:
 
         for author in self.index_from_author:
             self.index_from_author[author] = [i - 1 if i > book_index else i for i in
-                                                self.index_from_author[author]]
+                                              self.index_from_author[author]]
 
         for isbn_key, idx in self.index_from_isbn.items():
             if idx > book_index:
