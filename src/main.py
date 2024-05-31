@@ -58,9 +58,11 @@ def run_cli() -> None:
             case 'l':
                 helpers.clear_screen()
                 prompts.prompt_list(library)
+                helpers.clear_screen()
             case 's':
                 helpers.clear_screen()
                 prompts.prompt_search(library)
+                helpers.clear_screen()
             case 'c':
                 helpers.clear_screen()
                 prompts.prompt_convert()

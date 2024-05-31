@@ -1,12 +1,6 @@
 # module prompts
 
-import math
-
-from rich.align import Align
-from rich.panel import Panel
-from rich.table import Table
 from rich.prompt import Confirm, Prompt
-from rich import print as rprint
 
 import convert
 import helpers
@@ -124,53 +118,7 @@ def prompt_list(library: Library) -> None:
     books: list[Book] = library.books
 
     if books:
-        page:      int = 0
-        page_size: int = 5
-        max_page:  int = math.ceil(len(books) / page_size)
-
-        while True:
-            table: Table = helpers.create_table_large()
-
-            start: int = page_size * page
-            end:   int = start + page_size
-
-            end = min(end, len(books))
-
-            for i in range(start, end):
-                table.add_row(books[i].title, books[i].author, books[i].isbn, books[i].publisher,
-                              books[i].cover, books[i].category, str(books[i].edition),
-                              str(books[i].year), str(books[i].pages))
-
-            rprint(Align(Panel(table, title=f'Page {page + 1} of {max_page}'), align='center'))
-
-            if max_page > 1:
-                prompt: str = Prompt.ask(r'\[n]ext, \[p]rev, \[g]oto, \[q]uit',
-                                         choices=['n', 'p', 'g', 'q'])
-
-                match prompt:
-                    case 'n':
-                        if end != len(books):
-                            page += 1
-                    case 'p':
-                        if page != 0:
-                            page -= 1
-                    case 'g':
-                        while True:
-                            page_no: str = Prompt.ask('Page')
-
-                            if page_no.isdigit():
-                                page = int(page_no) - 1
-
-                                if 0 <= page < max_page:
-                                    break
-
-                            helpers.print_error('Enter a valid page number.')
-                    case 'q':
-                        break
-
-                helpers.clear_screen()
-            else:
-                break
+        helpers.create_interactive_table(books)
     else:
         helpers.print_info('No books in library.')
 
@@ -181,51 +129,7 @@ def prompt_search(library: Library) -> None:
     helpers.clear_screen()
 
     if books:
-        page:      int = 0
-        page_size: int = 5
-        max_page:  int = math.ceil(len(books) / page_size)
-
-        while True:
-            table: Table = helpers.create_table_small()
-
-            start: int = page_size * page
-            end:   int = start + page_size
-
-            end = min(end, len(books))
-
-            for i in range(start, end):
-                table.add_row(books[i].title, books[i].author, books[i].isbn)
-
-            rprint(Align(Panel(table, title=f'Page {page + 1} of {max_page}'), align='center'))
-
-            if max_page > 1:
-                prompt: str = Prompt.ask(r'\[n]ext, \[p]rev, \[g]oto, \[q]uit',
-                                         choices=['n', 'p', 'g', 'q'])
-
-                match prompt:
-                    case 'n':
-                        if end != len(books):
-                            page += 1
-                    case 'p':
-                        if page != 0:
-                            page -= 1
-                    case 'g':
-                        while True:
-                            page_no: str = Prompt.ask('Page')
-
-                            if page_no.isdigit():
-                                page = int(page_no) - 1
-
-                                if 0 <= page < max_page:
-                                    break
-
-                            helpers.print_error('Enter a valid page number.')
-                    case 'q':
-                        break
-
-                helpers.clear_screen()
-            else:
-                break
+        helpers.create_interactive_table(books)
     else:
         helpers.print_info('No books found.')
 
