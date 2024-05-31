@@ -10,8 +10,6 @@ from library import Library
 def prompt_add(library: Library) -> None:
     status: str | None = None
 
-    # TODO: add secondary prompt where more details can be added
-
     while True:
         helpers.print_mode('Add')
 
@@ -38,7 +36,20 @@ def prompt_add(library: Library) -> None:
             if author.lower() == 'q':
                 break
 
-            library.add_book(Book(title, author, isbn))
+            add_more: bool = Confirm.ask('Would you like to add more details?', default=False)
+
+            if add_more:
+                publisher: str = Prompt.ask('Publisher', default='not_set')
+                cover:     str = Prompt.ask('Cover',     default='not_set')
+                category:  str = Prompt.ask('Category',  default='not_set')
+                edition:   str = Prompt.ask('Edition',   default='0')
+                year:      str = Prompt.ask('Year',      default='0')
+                pages:     str = Prompt.ask('Pages',     default='0')
+
+                library.add_book(Book(title, author, isbn, publisher, cover, category, int(edition),
+                                 int(year), int(pages)))
+            else:
+                library.add_book(Book(title, author, isbn))
 
             status = f'Title: {title}, ISBN: {isbn} added successfully.'
 
@@ -47,22 +58,20 @@ def prompt_add(library: Library) -> None:
 def prompt_edit(library: Library) -> None:
     status: str | None = None
 
-    # TODO: add secondary prompt where more details can be added
-
     while True:
         helpers.print_mode('Edit')
 
         if status:
             helpers.print_info(status)
 
-        isbn: str = Prompt.ask('Current ISBN')
+        old_isbn: str = Prompt.ask('Current ISBN')
 
-        if isbn.lower() == 'q':
+        if old_isbn.lower() == 'q':
             break
 
-        book: Book | None = library.book_by_isbn(isbn)
+        old_book: Book | None = library.book_by_isbn(old_isbn)
 
-        if book:
+        if old_book:
             new_isbn: str = Prompt.ask('New ISBN')
 
             if new_isbn.lower() == 'q':
@@ -81,11 +90,26 @@ def prompt_edit(library: Library) -> None:
                 if new_author.lower() == 'q':
                     break
 
-                library.edit_book(book, new_title, new_author, new_isbn)
+                add_more: bool = Confirm.ask('Would you like to add more details?', default=False)
+
+                if add_more:
+                    publisher: str = Prompt.ask('Publisher', default='not_set')
+                    cover:     str = Prompt.ask('Cover',     default='not_set')
+                    category:  str = Prompt.ask('Category',  default='not_set')
+                    edition:   str = Prompt.ask('Edition',   default='0')
+                    year:      str = Prompt.ask('Year',      default='0')
+                    pages:     str = Prompt.ask('Pages',     default='0')
+
+                    new_book: Book = Book(new_title, new_author, new_isbn, publisher, cover,
+                                          category, int(edition), int(year), int(pages))
+                    library.edit_book(old_book, new_book)
+                else:
+                    new_book: Book = Book(new_title, new_author, new_isbn)
+                    library.edit_book(old_book, new_book)
 
                 status = f'Title: {new_title}, ISBN: {new_isbn} edited successfully.'
         else:
-            status = f'ISBN: {isbn} not found.'
+            status = f'ISBN: {old_isbn} not found.'
 
         helpers.clear_screen()
 

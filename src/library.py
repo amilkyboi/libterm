@@ -25,11 +25,9 @@ class Library:
         self.index_from_author[book.author].append(book_index)
         self.index_from_isbn[book.isbn] = book_index
 
-    def edit_book(self, book: Book, new_title: str, new_author: str, new_isbn: str) -> None:
+    def edit_book(self, old_book: Book, new_book: Book) -> None:
         # NOTE: only called if the book exists and the new ISBN isn't taken; enforced in main.py
-        new_book: Book = Book(new_title, new_author, new_isbn)
-
-        self.remove_book(book)
+        self.remove_book(old_book)
         self.add_book(new_book)
 
     def remove_book(self, book: Book) -> None:
