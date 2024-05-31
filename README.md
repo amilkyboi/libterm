@@ -11,6 +11,7 @@ Personal library management system in the terminal.
 - [x] Optionally export data to CSV
 - [x] Add the ability to edit existing books
 - [x] Optionally import data from CSV
+- [x] Add universal color palette
 - [ ] Add JSON schema
 
 ### Long-term
@@ -19,3 +20,4 @@ Personal library management system in the terminal.
 - [ ] Store library in an actual database
 - [ ] Support persistent user settings
 - [ ] Display dynamic search results
+- [ ] Support user-created color themes
