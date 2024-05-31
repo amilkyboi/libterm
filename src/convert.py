@@ -22,9 +22,6 @@ def json_to_csv(file_name: str) -> None:
         raise e
 
 def csv_to_json(file_name: str) -> None:
-    # FIXME: this writes all values as strings when converting to JSON; needs to be fixed for
-    #        edition, year, and pages
-
     json_data: list[dict] = []
 
     csv_file_path:  str = f'../data/{file_name}.csv'
@@ -34,6 +31,9 @@ def csv_to_json(file_name: str) -> None:
         csv_data: csv.DictReader = csv.DictReader(csv_file)
 
         for row in csv_data:
+            row['edition'] = int(row['edition'])
+            row['year']    = int(row['year'])
+            row['pages']   = int(row['pages'])
             json_data.append(row)
 
     with open(json_file_path, mode='w', encoding='utf-8') as json_file:
