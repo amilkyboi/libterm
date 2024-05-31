@@ -77,10 +77,11 @@ def create_interactive_table(books: list[Book], table_type: str = 'small') -> No
 
         rprint(Align(Panel(table, title=f'Page {page + 1} of {max_page}'), align='center'))
 
-        # TODO: remove next, prev, and goto options for tables that only have one page
-
-        prompt: str = Prompt.ask(r'\[n]ext, \[p]rev, \[g]oto, \[t]oggle details, \[q]uit',
-                                    choices=['n', 'p', 'g', 't', 'q'])
+        if max_page > 1:
+            prompt: str = Prompt.ask(r'\[n]ext, \[p]rev, \[g]oto, \[t]oggle details, \[q]uit',
+                                     choices=['n', 'p', 'g', 't', 'q'])
+        else:
+            prompt: str = Prompt.ask(r'\[t]oggle details, \[q]uit', choices=['t', 'q'])
 
         match prompt:
             case 'n':
