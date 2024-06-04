@@ -158,11 +158,11 @@ def prompt_search(library: Library) -> None:
         helpers.print_info('No books found.')
 
 def prompt_convert() -> None:
-    # TODO: deal with file already existing
+    # TODO: 05/30/24 - deal with file already existing
 
-    # FIXME: when no JSON file with the default file path is located and a CSV is converted to a
-    #        JSON with the default file path, the program will delete the newly created JSON file on
-    #        exit, even when save is selected; this needs to be fixed
+    # FIXME: 05/31/24 - when no JSON file with the default file path is located and a CSV is
+    #        converted to a JSON with the default file path, the program will delete the newly
+    #        created JSON file on exit, even when save is selected; this needs to be fixed
 
     choice: str = Prompt.ask(r'\[i]mport, \[e]xport, \[q]uit', choices=['i', 'e', 'q'])
 

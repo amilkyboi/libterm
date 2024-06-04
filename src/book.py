@@ -8,7 +8,6 @@ class Book:
         self.author:    str = author
         self.isbn:      str = isbn
         self.publisher: str = publisher
-        # TODO: cover should probably be an enum, but JSON encoding and decoding is annoying
         self.cover:     str = cover
         self.category:  str = category
         self.edition:   int = edition
