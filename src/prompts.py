@@ -49,12 +49,12 @@ def prompt_add(library: Library) -> None:
                 publisher: str = Prompt.ask("Publisher", default="not_set")
                 cover:     str = Prompt.ask("Cover",     default="not_set")
                 category:  str = Prompt.ask("Category",  default="not_set")
-                edition:   str = Prompt.ask("Edition",   default='0')
-                year:      str = Prompt.ask("Year",      default='0')
-                pages:     str = Prompt.ask("Pages",     default='0')
+                edition:   str = Prompt.ask("Edition",   default="not_set")
+                year:      str = Prompt.ask("Year",      default="not_set")
+                pages:     str = Prompt.ask("Pages",     default="not_set")
 
-                library.add_book(Book(title, author, isbn, publisher, cover, category, int(edition),
-                                 int(year), int(pages)))
+                library.add_book(Book(title, author, isbn, publisher, cover, category, edition,
+                                      year, pages))
             else:
                 library.add_book(Book(title, author, isbn))
 
@@ -107,12 +107,12 @@ def prompt_edit(library: Library) -> None:
                     publisher: str = Prompt.ask("Publisher", default="not_set")
                     cover:     str = Prompt.ask("Cover",     default="not_set")
                     category:  str = Prompt.ask("Category",  default="not_set")
-                    edition:   str = Prompt.ask("Edition",   default='0')
-                    year:      str = Prompt.ask("Year",      default='0')
-                    pages:     str = Prompt.ask("Pages",     default='0')
+                    edition:   str = Prompt.ask("Edition",   default="not_set")
+                    year:      str = Prompt.ask("Year",      default="not_set")
+                    pages:     str = Prompt.ask("Pages",     default="not_set")
 
                     new_book: Book = Book(new_title, new_author, new_isbn, publisher, cover,
-                                          category, int(edition), int(year), int(pages))
+                                          category, edition, year, pages)
                     library.edit_book(old_book, new_book)
                 else:
                     new_book: Book = Book(new_title, new_author, new_isbn)
