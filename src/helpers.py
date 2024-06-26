@@ -108,8 +108,7 @@ def create_interactive_table(books: list[Book], table_type: str = "small") -> No
                 for i in range(start, end):
                     table.add_row(books[i].title, books[i].author, books[i].isbn,
                                   books[i].publisher, books[i].cover, books[i].category,
-                                  str(books[i].edition), str(books[i].year),
-                                  str(books[i].pages))
+                                  books[i].edition, books[i].year, books[i].pages)
 
         rprint(Align(Panel(table, title=f"Page {page + 1} of {max_page}"), align="center"))
 

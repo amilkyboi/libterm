@@ -20,7 +20,7 @@ def prompt_add(library: Library) -> None:
     while True:
         helpers.print_mode("Add")
 
-        if status:
+        if status is not None:
             helpers.print_info(status)
 
         isbn: str = Prompt.ask("ISBN")
@@ -30,7 +30,7 @@ def prompt_add(library: Library) -> None:
 
         book: Book | None = library.book_by_isbn(isbn)
 
-        if book:
+        if book is not None:
             status = f"Title: {book.title}, ISBN: {book.isbn} already exists."
         else:
             title: str = Prompt.ask("Title")
@@ -49,12 +49,12 @@ def prompt_add(library: Library) -> None:
                 publisher: str = Prompt.ask("Publisher", default="not_set")
                 cover:     str = Prompt.ask("Cover",     default="not_set")
                 category:  str = Prompt.ask("Category",  default="not_set")
-                edition:   str = Prompt.ask("Edition",   default='0')
-                year:      str = Prompt.ask("Year",      default='0')
-                pages:     str = Prompt.ask("Pages",     default='0')
+                edition:   str = Prompt.ask("Edition",   default="not_set")
+                year:      str = Prompt.ask("Year",      default="not_set")
+                pages:     str = Prompt.ask("Pages",     default="not_set")
 
-                library.add_book(Book(title, author, isbn, publisher, cover, category, int(edition),
-                                 int(year), int(pages)))
+                library.add_book(Book(title, author, isbn, publisher, cover, category, edition,
+                                      year, pages))
             else:
                 library.add_book(Book(title, author, isbn))
 
@@ -72,7 +72,7 @@ def prompt_edit(library: Library) -> None:
     while True:
         helpers.print_mode("Edit")
 
-        if status:
+        if status is not None:
             helpers.print_info(status)
 
         old_isbn: str = Prompt.ask("Current ISBN")
@@ -82,7 +82,7 @@ def prompt_edit(library: Library) -> None:
 
         old_book: Book | None = library.book_by_isbn(old_isbn)
 
-        if old_book:
+        if old_book is not None:
             new_isbn: str = Prompt.ask("New ISBN")
 
             if new_isbn.lower() == 'q':
@@ -107,12 +107,12 @@ def prompt_edit(library: Library) -> None:
                     publisher: str = Prompt.ask("Publisher", default="not_set")
                     cover:     str = Prompt.ask("Cover",     default="not_set")
                     category:  str = Prompt.ask("Category",  default="not_set")
-                    edition:   str = Prompt.ask("Edition",   default='0')
-                    year:      str = Prompt.ask("Year",      default='0')
-                    pages:     str = Prompt.ask("Pages",     default='0')
+                    edition:   str = Prompt.ask("Edition",   default="not_set")
+                    year:      str = Prompt.ask("Year",      default="not_set")
+                    pages:     str = Prompt.ask("Pages",     default="not_set")
 
                     new_book: Book = Book(new_title, new_author, new_isbn, publisher, cover,
-                                          category, int(edition), int(year), int(pages))
+                                          category, edition, year, pages)
                     library.edit_book(old_book, new_book)
                 else:
                     new_book: Book = Book(new_title, new_author, new_isbn)
@@ -134,7 +134,7 @@ def prompt_remove(library: Library) -> None:
     while True:
         helpers.print_mode("Remove")
 
-        if status:
+        if status is not None:
             helpers.print_info(status)
 
         isbn: str = Prompt.ask("ISBN")
@@ -144,7 +144,7 @@ def prompt_remove(library: Library) -> None:
 
         book: Book | None = library.book_by_isbn(isbn)
 
-        if book:
+        if book is not None:
             library.remove_book(book)
 
             status = f"Title: {book.title}, ISBN: {book.isbn} removed successfully."

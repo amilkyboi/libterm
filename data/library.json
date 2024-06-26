@@ -6,9 +6,9 @@
         "publisher": "not_set",
         "cover": "not_set",
         "category": "not_set",
-        "edition": 0,
-        "year": 0,
-        "pages": 0
+        "edition": "not_set",
+        "year": "not_set",
+        "pages": "not_set"
     },
     {
         "title": "phys",
@@ -17,9 +17,9 @@
         "publisher": "not_set",
         "cover": "not_set",
         "category": "not_set",
-        "edition": 0,
-        "year": 0,
-        "pages": 0
+        "edition": "not_set",
+        "year": "not_set",
+        "pages": "not_set"
     },
     {
         "title": "chem",
@@ -28,9 +28,9 @@
         "publisher": "not_set",
         "cover": "not_set",
         "category": "not_set",
-        "edition": 0,
-        "year": 0,
-        "pages": 0
+        "edition": "not_set",
+        "year": "not_set",
+        "pages": "not_set"
     },
     {
         "title": "math",
@@ -39,9 +39,9 @@
         "publisher": "not_set",
         "cover": "not_set",
         "category": "not_set",
-        "edition": 0,
-        "year": 0,
-        "pages": 0
+        "edition": "not_set",
+        "year": "not_set",
+        "pages": "not_set"
     },
     {
         "title": "phys",
@@ -50,9 +50,9 @@
         "publisher": "not_set",
         "cover": "not_set",
         "category": "not_set",
-        "edition": 0,
-        "year": 0,
-        "pages": 0
+        "edition": "not_set",
+        "year": "not_set",
+        "pages": "not_set"
     },
     {
         "title": "chem",
@@ -61,8 +61,8 @@
         "publisher": "not_set",
         "cover": "not_set",
         "category": "not_set",
-        "edition": 0,
-        "year": 0,
-        "pages": 0
+        "edition": "not_set",
+        "year": "not_set",
+        "pages": "not_set"
     }
 ]

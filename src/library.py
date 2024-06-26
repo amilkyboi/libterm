@@ -158,7 +158,8 @@ class Library:
 
             for item in collection:
                 match: Match[str] | None = regex.search(item)
-                if match:
+
+                if match is not None:
                     suggestions.append((len(match.group()), match.start(), item))
 
             return [x for _, _, x in sorted(suggestions)]
