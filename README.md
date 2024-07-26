@@ -1,4 +1,4 @@
-# library
+# libterm
 
 Personal library management system in the terminal.
 
@@ -12,7 +12,6 @@ Personal library management system in the terminal.
 - [x] Add the ability to edit existing books
 - [x] Optionally import data from CSV
 - [x] Add universal color palette
-- [ ] Add JSON schema
 
 ### Long-term
 
