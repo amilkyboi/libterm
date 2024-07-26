@@ -3,6 +3,8 @@
 Contains various prompts for interacting with the CLI.
 """
 
+from pathlib import Path
+
 from rich.prompt import Confirm, Prompt
 
 import convert
@@ -180,38 +182,52 @@ def prompt_search(library: Library) -> None:
     else:
         helpers.print_info("No books found.")
 
-def prompt_convert() -> None:
+def prompt_convert(library: Library) -> None:
     """
     Prompts the user to convert files.
     """
-
-    # TODO: 05/30/24 - deal with file already existing
-
-    # FIXME: 05/31/24 - when no JSON file with the default file path is located and a CSV is
-    #        converted to a JSON with the default file path, the program will delete the newly
-    #        created JSON file on exit, even when save is selected; this needs to be fixed
 
     choice: str = Prompt.ask(r"\[i]mport, \[e]xport, \[q]uit", choices=['i', 'e', 'q'])
 
     match choice:
         case 'i':
-            file_name: str = Prompt.ask("CSV file name")
+            file_name:      str  = Prompt.ask("CSV file name")
+            file_path_csv:  Path = Path(f"../data/{file_name}.csv")
+            file_path_json: Path = file_path_csv.with_suffix(".json")
+
+            # If a JSON file with the selected name already exists, don't import the CSV
+            if file_path_json.is_file():
+                helpers.print_warn(f"File {file_path_json} already exists. File not imported.")
+                return
 
             try:
-                convert.csv_to_json(file_name)
-                helpers.print_info(f"File {file_name}.csv imported to {file_name}.json.")
+                convert.csv_to_json(file_path_csv, file_path_json)
+
+                # NOTE: 07/26/24 - when no JSON file with the default file path is located and a CSV
+                #       is converted to a JSON with the default file path, ensure that the data is
+                #       loaded into the library
+                library.load_file(file_path_json)
+
+                helpers.print_info(f"File {file_path_csv} imported to {file_path_json}.")
             except FileNotFoundError:
-                helpers.print_warn(f"The {file_name}.csv file could not be located.")
+                helpers.print_warn(f"The {file_path_csv} file could not be located.")
         case 'e':
-            file_name: str = Prompt.ask("JSON file name")
+            file_name:      str  = Prompt.ask("JSON file name")
+            file_path_csv:  Path = Path(f"../data/{file_name}.csv")
+            file_path_json: Path = file_path_csv.with_suffix(".json")
+
+            # If a CSV file with the selected name already exists, don't export the JSON
+            if file_path_csv.is_file():
+                helpers.print_warn(f"File {file_path_csv} already exists. File not exported.")
+                return
 
             try:
-                convert.json_to_csv(file_name)
-                helpers.print_info(f"File {file_name}.json exported to {file_name}.csv.")
+                convert.json_to_csv(file_path_csv, file_path_json)
+                helpers.print_info(f"File {file_path_json} exported to {file_path_csv}.")
             except FileNotFoundError:
-                helpers.print_warn(f"The {file_name}.json file could not be located.")
+                helpers.print_warn(f"The {file_path_json} file could not be located.")
 
-def prompt_quit(library: Library, file_path: str) -> None:
+def prompt_quit(library: Library, file_path: Path) -> None:
     """
     Prompts the user to quit the program.
     """

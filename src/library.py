@@ -6,6 +6,7 @@ Contains the implementation of the Library class.
 import os
 import re
 import json
+from pathlib import Path
 from re import Pattern, Match
 from collections import defaultdict
 
@@ -175,12 +176,12 @@ class Library:
 
         return [self.books[i] for i in matched_indices]
 
-    def update_file(self, file_path: str) -> str:
+    def update_file(self, file_path: Path) -> str:
         """
         Creates, updates, or removes a JSON file containing information about each book.
         """
 
-        existing_file: bool = os.path.isfile(file_path)
+        existing_file: bool = file_path.is_file()
 
         books_data: list[dict] = [vars(book) for book in self.books]
 
@@ -215,7 +216,7 @@ class Library:
 
         return "No books in list. File not created."
 
-    def load_file(self, file_path: str) -> str:
+    def load_file(self, file_path: Path) -> str:
         """
         Loads an existing JSON file and adds the corresponding books into memory.
         """
