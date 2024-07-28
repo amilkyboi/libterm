@@ -1,7 +1,2 @@
-title,author,isbn,publisher,cover,category,edition,year,pages
-math,prof,1234,not_set,not_set,not_set,not_set,not_set,not_set
-phys,prof,2345,not_set,not_set,not_set,not_set,not_set,not_set
-chem,prof,3456,not_set,not_set,not_set,not_set,not_set,not_set
-math,dude,4567,not_set,not_set,not_set,not_set,not_set,not_set
-phys,dude,5678,not_set,not_set,not_set,not_set,not_set,not_set
-chem,dude,7890,not_set,not_set,not_set,not_set,not_set,not_set
+title,author,isbn,category,cover,edition,pages,publisher,translator,volume,year
+test,dude,1234,-,-,-,-,-,-,-,-

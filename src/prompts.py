@@ -48,15 +48,17 @@ def prompt_add(library: Library) -> None:
             add_more: bool = Confirm.ask("Would you like to add more details?", default=False)
 
             if add_more:
-                publisher: str = Prompt.ask("Publisher", default="not_set")
-                cover:     str = Prompt.ask("Cover",     default="not_set")
-                category:  str = Prompt.ask("Category",  default="not_set")
-                edition:   str = Prompt.ask("Edition",   default="not_set")
-                year:      str = Prompt.ask("Year",      default="not_set")
-                pages:     str = Prompt.ask("Pages",     default="not_set")
+                category:   str = Prompt.ask("Category",   default="-")
+                cover:      str = Prompt.ask("Cover",      default="-")
+                edition:    str = Prompt.ask("Edition",    default="-")
+                pages:      str = Prompt.ask("Pages",      default="-")
+                publisher:  str = Prompt.ask("Publisher",  default="-")
+                translator: str = Prompt.ask("Translator", default="-")
+                volume:     str = Prompt.ask("Volume",     default="-")
+                year:       str = Prompt.ask("Year",       default="-")
 
-                library.add_book(Book(title, author, isbn, publisher, cover, category, edition,
-                                      year, pages))
+                library.add_book(Book(title, author, isbn, category, cover, edition, pages,
+                                      publisher, translator, volume, year))
             else:
                 library.add_book(Book(title, author, isbn))
 
@@ -106,15 +108,17 @@ def prompt_edit(library: Library) -> None:
                 add_more: bool = Confirm.ask("Would you like to add more details?", default=False)
 
                 if add_more:
-                    publisher: str = Prompt.ask("Publisher", default="not_set")
-                    cover:     str = Prompt.ask("Cover",     default="not_set")
-                    category:  str = Prompt.ask("Category",  default="not_set")
-                    edition:   str = Prompt.ask("Edition",   default="not_set")
-                    year:      str = Prompt.ask("Year",      default="not_set")
-                    pages:     str = Prompt.ask("Pages",     default="not_set")
+                    category:   str = Prompt.ask("Category",   default="-")
+                    cover:      str = Prompt.ask("Cover",      default="-")
+                    edition:    str = Prompt.ask("Edition",    default="-")
+                    pages:      str = Prompt.ask("Pages",      default="-")
+                    publisher:  str = Prompt.ask("Publisher",  default="-")
+                    translator: str = Prompt.ask("Translator", default="-")
+                    volume:     str = Prompt.ask("Volume",     default="-")
+                    year:       str = Prompt.ask("Year",       default="-")
 
-                    new_book: Book = Book(new_title, new_author, new_isbn, publisher, cover,
-                                          category, edition, year, pages)
+                    new_book: Book = Book(new_title, new_author, new_isbn, category, cover, edition,
+                                          pages, publisher, translator, volume, year)
                     library.edit_book(old_book, new_book)
                 else:
                     new_book: Book = Book(new_title, new_author, new_isbn)
@@ -211,6 +215,7 @@ def prompt_convert(library: Library) -> None:
                 helpers.print_info(f"File {file_path_csv} imported to {file_path_json}.")
             except FileNotFoundError:
                 helpers.print_warn(f"The {file_path_csv} file could not be located.")
+
         case 'e':
             file_name:      str  = Prompt.ask("JSON file name")
             file_path_csv:  Path = Path(f"../data/{file_name}.csv")

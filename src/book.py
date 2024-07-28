@@ -14,9 +14,12 @@ class Book:
     title:     str
     author:    str
     isbn:      str
-    publisher: str = "not_set"
-    cover:     str = "not_set"
-    category:  str = "not_set"
-    edition:   str = "not_set"
-    year:      str = "not_set"
-    pages:     str = "not_set"
+
+    category:   str = "-"
+    cover:      str = "-"
+    edition:    str = "-"
+    pages:      str = "-"
+    publisher:  str = "-"
+    translator: str = "-"
+    volume:     str = "-"
+    year:       str = "-"
