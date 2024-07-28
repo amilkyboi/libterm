@@ -51,13 +51,14 @@ def prompt_add(library: Library) -> None:
                 category:   str = Prompt.ask("Category",   default="-")
                 cover:      str = Prompt.ask("Cover",      default="-")
                 edition:    str = Prompt.ask("Edition",    default="-")
+                editor:     str = Prompt.ask("Editor",     default="-")
                 pages:      str = Prompt.ask("Pages",      default="-")
                 publisher:  str = Prompt.ask("Publisher",  default="-")
                 translator: str = Prompt.ask("Translator", default="-")
                 volume:     str = Prompt.ask("Volume",     default="-")
                 year:       str = Prompt.ask("Year",       default="-")
 
-                library.add_book(Book(title, author, isbn, category, cover, edition, pages,
+                library.add_book(Book(title, author, isbn, category, cover, edition, editor, pages,
                                       publisher, translator, volume, year))
             else:
                 library.add_book(Book(title, author, isbn))
@@ -111,6 +112,7 @@ def prompt_edit(library: Library) -> None:
                     category:   str = Prompt.ask("Category",   default="-")
                     cover:      str = Prompt.ask("Cover",      default="-")
                     edition:    str = Prompt.ask("Edition",    default="-")
+                    editor:     str = Prompt.ask("Editor",     default="-")
                     pages:      str = Prompt.ask("Pages",      default="-")
                     publisher:  str = Prompt.ask("Publisher",  default="-")
                     translator: str = Prompt.ask("Translator", default="-")
@@ -118,7 +120,7 @@ def prompt_edit(library: Library) -> None:
                     year:       str = Prompt.ask("Year",       default="-")
 
                     new_book: Book = Book(new_title, new_author, new_isbn, category, cover, edition,
-                                          pages, publisher, translator, volume, year)
+                                          editor, pages, publisher, translator, volume, year)
                     library.edit_book(old_book, new_book)
                 else:
                     new_book: Book = Book(new_title, new_author, new_isbn)

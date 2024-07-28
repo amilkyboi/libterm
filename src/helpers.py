@@ -78,11 +78,12 @@ def initialize_large_table() -> Table:
     table.add_column("Category",   style=f"{colors["blue"]}",   header_style=f"{colors["blue"]}")
     table.add_column("Cover",      style=f"{colors["purple"]}", header_style=f"{colors["purple"]}")
     table.add_column("Edition",    style=f"{colors["pink"]}",   header_style=f"{colors["pink"]}")
-    table.add_column("Pages",      style=f"{colors["blue"]}",   header_style=f"{colors["blue"]}")
-    table.add_column("Publisher",  style=f"{colors["purple"]}", header_style=f"{colors["purple"]}")
-    table.add_column("Translator", style=f"{colors["pink"]}",   header_style=f"{colors["pink"]}")
-    table.add_column("Volume",     style=f"{colors["blue"]}",   header_style=f"{colors["blue"]}")
-    table.add_column("Year",       style=f"{colors["purple"]}", header_style=f"{colors["purple"]}")
+    table.add_column("Editor",     style=f"{colors["blue"]}",   header_style=f"{colors["blue"]}")
+    table.add_column("Pages",      style=f"{colors["purple"]}", header_style=f"{colors["purple"]}")
+    table.add_column("Publisher",  style=f"{colors["pink"]}",   header_style=f"{colors["pink"]}")
+    table.add_column("Translator", style=f"{colors["blue"]}",   header_style=f"{colors["blue"]}")
+    table.add_column("Volume",     style=f"{colors["purple"]}", header_style=f"{colors["purple"]}")
+    table.add_column("Year",       style=f"{colors["pink"]}",   header_style=f"{colors["pink"]}")
 
     return table
 
@@ -92,7 +93,7 @@ def create_interactive_table(books: list[Book], table_type: str = "small") -> No
     """
 
     page:      int = 0
-    page_size: int = 5
+    page_size: int = 10
     max_page:  int = math.ceil(len(books) / page_size)
 
     while True:
@@ -110,7 +111,7 @@ def create_interactive_table(books: list[Book], table_type: str = "small") -> No
                 table: Table = initialize_large_table()
                 for i in range(start, end):
                     table.add_row(books[i].title, books[i].author, books[i].isbn, books[i].category,
-                                  books[i].cover, books[i].edition, books[i].pages,
+                                  books[i].cover, books[i].edition, books[i].editor, books[i].pages,
                                   books[i].publisher, books[i].translator, books[i].volume,
                                   books[i].year)
 

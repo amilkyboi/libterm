@@ -1,2 +1,2 @@
-title,author,isbn,category,cover,edition,pages,publisher,translator,volume,year
-test,dude,1234,-,-,-,-,-,-,-,-
+title,author,isbn,category,cover,edition,editor,pages,publisher,translator,volume,year
+test,dude,1234,-,-,-,-,-,-,-,-,-

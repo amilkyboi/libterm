@@ -18,6 +18,7 @@ class Book:
     category:   str = "-"
     cover:      str = "-"
     edition:    str = "-"
+    editor:     str = "-"
     pages:      str = "-"
     publisher:  str = "-"
     translator: str = "-"
