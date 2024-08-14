@@ -5,6 +5,7 @@ Contains the main loop for running the CLI.
 
 import os
 import json
+from pathlib import Path
 
 from rich.prompt import Confirm, Prompt
 
@@ -12,7 +13,7 @@ import helpers
 import prompts
 from library import Library
 
-DEFAULT_FILE_PATH: str = "../data/library.json"
+DEFAULT_FILE_PATH: Path = Path("../data/library.json")
 
 def run_cli() -> None:
     """
@@ -74,7 +75,7 @@ def run_cli() -> None:
                 helpers.clear_screen()
             case 'c':
                 helpers.clear_screen()
-                prompts.prompt_convert()
+                prompts.prompt_convert(library)
             case 'q':
                 helpers.clear_screen()
                 prompts.prompt_quit(library, DEFAULT_FILE_PATH)
